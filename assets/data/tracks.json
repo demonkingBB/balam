@@ -1,0 +1,22 @@
+{
+  "tracks": [
+    {
+      "title": "Out of My Body",
+      "week": "WK 01",
+      "genre": "Pop Fusion Divine",
+      "cover": "assets/images/out_of_body_spiritual.webp",
+      "coverAlt": "Out of My Body cover art",
+      "lyrics": "assets/lyrics/out_of_my_body.txt",
+      "youtubeId": "_JkPSw9EDmM",
+      "featured": true,
+      "status": "active"
+    },
+    {
+      "title": "Coming Soon",
+      "week": "WK 02",
+      "genre": "Track 02",
+      "lockedLabel": "Unlocks Next Friday",
+      "status": "locked"
+    }
+  ]
+}

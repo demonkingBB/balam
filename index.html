@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="IVOLEUS BALAM official music vault with weekly releases, lyrics, and concept art.">
+  <title>IVOLEUS BALAM | Official Music Vault</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="assets/style/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <a class="skip-link" href="#featured">Skip to content</a>
+
+  <header class="navbar">
+    <div class="logo-container">
+      <img src="assets/images/logo.png" alt="Ivoleus Balam emblem" class="nav-logo">
+    </div>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#featured">Latest Drop</a>
+      <a href="#vault">The Vault</a>
+      <a href="#about">Origin</a>
+      <a class="nav-link-subtle" href="#lore">Lore Thread</a>
+      <a href="#subscribe" class="btn-primary-sm">Get Drop Alerts</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="featured" class="hero">
+      <div class="hero-overlay" aria-hidden="true"></div>
+      <div class="hero-content">
+        <div class="artwork-wrapper">
+          <img src="assets/images/out_of_body_spiritual.webp" alt="Featured release artwork for Out of My Body" class="hero-cover">
+          <span class="badge">Week 01 Single</span>
+        </div>
+        <div class="player-details">
+          <p class="eyebrow">Official Release</p>
+          <h1 class="track-title">Out of My Body</h1>
+          <p class="track-meta">Pop fusion - Released this Friday</p>
+
+          <div class="audio-container">
+            <div class="custom-audio-player">
+              <button class="play-btn" id="play-toggle" type="button" aria-label="Play featured track" aria-controls="youtube-audio-player" aria-describedby="player-status-text" data-play-track="true" data-track-title="Out of My Body" data-track-youtube-id="_JkPSw9EDmM">
+                <span id="ytPlayIcon" aria-hidden="true">Play</span>
+              </button>
+              <div class="player-status">
+                <strong>Featured Track</strong>
+                <p id="player-status-text">Loading YouTube player...</p>
+              </div>
+            </div>
+
+            <div class="yt-player-shell" aria-hidden="true">
+              <div id="youtube-audio-player"></div>
+            </div>
+          </div>
+
+          <div class="streaming-links" aria-label="Streaming links">
+            <a href="#" class="btn-stream spotify">Listen on Spotify</a>
+            <a href="#" class="btn-stream youtube">YouTube Music</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="vault" class="vault-section">
+      <div class="section-header">
+        <p class="section-kicker">Weekly releases</p>
+        <h2>The 52-Week Vault</h2>
+        <p>One new track every Friday. Open lyrics, explore concept art, and keep the lore in the background until it earns its own space.</p>
+      </div>
+
+      <div id="vault-grid" class="grid-container" aria-live="polite">
+        <p class="vault-loading">Loading releases...</p>
+      </div>
+    </section>
+
+    <section id="about" class="story-section">
+      <div class="story-container">
+        <p class="section-kicker">Identity layer</p>
+        <h2>The Origin & Anagrams</h2>
+        <p>Rooted in ancestral motifs and symbolic wordplay. The name <strong>IVOLEUS BALAM</strong> carries shifting letter mechanics where individual characters realign to form titles like <em>I Love Us</em>, <em>Baila Ormada</em>, and beyond.</p>
+      </div>
+    </section>
+
+    <section id="lore" class="lore-teaser">
+      <div class="lore-teaser-inner">
+        <div>
+          <p class="section-kicker">Future branch</p>
+          <h2>Story, comic, anime lore</h2>
+          <p>Keep this connected to the music world, but let it read like a side archive instead of the main headline. Use it for sketches, character sheets, chapter art, and lore notes.</p>
+        </div>
+        <a href="#" class="btn-lore" aria-label="Open the future lore archive">Preview lore archive</a>
+      </div>
+    </section>
+  </main>
+
+  <footer id="subscribe" class="site-footer">
+    <div class="footer-content">
+      <h3>Never Miss a Friday Drop</h3>
+      <p>Direct group messaging and email alerts for every weekly release.</p>
+      <form class="subscribe-form" onsubmit="event.preventDefault();">
+        <label class="sr-only" for="subscriber-name">Your name</label>
+        <input id="subscriber-name" type="text" placeholder="Your Name" required>
+        <label class="sr-only" for="subscriber-email">Your email</label>
+        <input id="subscriber-email" type="email" placeholder="Your Email" required>
+        <button type="submit" class="btn-submit">Join the Drop List</button>
+      </form>
+      <p class="copyright">&copy; 2026 IVOLEUS BALAM. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="assets/javascript/script.js"></script>
+</body>
+</html>
