@@ -8,13 +8,41 @@
       "coverAlt": "Out of My Body cover art",
       "lyrics": "assets/lyrics/out_of_my_body.txt",
       "youtubeId": "_JkPSw9EDmM",
+      "releaseDate": "2026-08-01",
+      "featured": false,
+      "status": "active"
+    },
+
+    {
+      "title": "Not Acting",
+      "week": "WK 02",
+      "genre": "Pop",
+      "cover": "assets/images/not_acting.png",
+      "coverAlt": "Not Acting cover art",
+      "lyrics": "assets/lyrics/not_acting.txt",
+      "youtubeId": "9R724NFdby8",
+      "releaseDate": "2026-08-08",
       "featured": true,
       "status": "active"
     },
+
+    {
+      "title": "Track 03",
+      "week": "WK 03",
+      "genre": "Track 03",
+      "cover": "assets/images/track_03.png",
+      "coverAlt": "Track 03 cover art",
+      "lyrics": "assets/lyrics/track_03.txt",
+      "youtubeId": "example_id_3",
+      "releaseDate": "2026-07-25",
+      "featured": false,
+      "status": "active"
+    },
+
     {
       "title": "Coming Soon",
-      "week": "WK 02",
-      "genre": "Track 02",
+      "week": "WK 03",
+      "genre": "Track 03",
       "lockedLabel": "Unlocks Next Friday",
       "status": "locked"
     }

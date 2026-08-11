@@ -31,13 +31,13 @@
       <div class="hero-overlay" aria-hidden="true"></div>
       <div class="hero-content">
         <div class="artwork-wrapper">
-          <img src="assets/images/out_of_body_spiritual.webp" alt="Featured release artwork for Out of My Body" class="hero-cover">
-          <span class="badge">Week 01 Single</span>
+          <img id="hero-cover" src="assets/images/out_of_body_spiritual.webp" alt="Featured release artwork for Out of My Body" class="hero-cover">
+          <span id="hero-badge" class="badge">Week 01 Single</span>
         </div>
         <div class="player-details">
           <p class="eyebrow">Official Release</p>
-          <h1 class="track-title">Out of My Body</h1>
-          <p class="track-meta">Pop fusion - Released this Friday</p>
+          <h1 id="hero-title" class="track-title">Out of My Body</h1>
+          <p id="hero-meta" class="track-meta">Pop fusion - Released this Friday</p>
 
           <div class="audio-container">
             <div class="custom-audio-player">
@@ -45,7 +45,7 @@
                 <span id="ytPlayIcon" aria-hidden="true">Play</span>
               </button>
               <div class="player-status">
-                <strong>Featured Track</strong>
+                <strong id="hero-status-label">Featured Track</strong>
                 <p id="player-status-text">Loading YouTube player...</p>
               </div>
             </div>
@@ -55,10 +55,7 @@
             </div>
           </div>
 
-          <div class="streaming-links" aria-label="Streaming links">
-            <a href="#" class="btn-stream spotify">Listen on Spotify</a>
-            <a href="#" class="btn-stream youtube">YouTube Music</a>
-          </div>
+          <div id="hero-streaming-links" class="streaming-links" aria-label="Streaming links"></div>
         </div>
       </div>
     </section>
@@ -99,13 +96,18 @@
     <div class="footer-content">
       <h3>Never Miss a Friday Drop</h3>
       <p>Direct group messaging and email alerts for every weekly release.</p>
-      <form class="subscribe-form" onsubmit="event.preventDefault();">
-        <label class="sr-only" for="subscriber-name">Your name</label>
-        <input id="subscriber-name" type="text" placeholder="Your Name" required>
-        <label class="sr-only" for="subscriber-email">Your email</label>
-        <input id="subscriber-email" type="email" placeholder="Your Email" required>
-        <button type="submit" class="btn-submit">Join the Drop List</button>
-      </form>
+      <form class="subscribe-form" id="drop-form">
+  <label class="sr-only" for="subscriber-name">Your name</label>
+  <!-- Added name="name" -->
+  <input id="subscriber-name" name="name" type="text" placeholder="Your Name" required>
+  
+  <label class="sr-only" for="subscriber-email">Your email</label>
+  <!-- Added name="email" -->
+  <input id="subscriber-email" name="email" type="email" placeholder="Your Email" required>
+  
+  <button type="submit" class="btn-submit" id="submit-btn">Join the Drop List</button>
+</form>
+<div id="response-message" style="display:none; margin-top: 15px;"></div>
       <p class="copyright">&copy; 2026 IVOLEUS BALAM. All rights reserved.</p>
     </div>
   </footer>

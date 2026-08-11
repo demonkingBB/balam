@@ -1,5 +1,9 @@
 const TRACK_MANIFEST_PATH = 'assets/data/tracks.json';
 const DEFAULT_YOUTUBE_ID = '_JkPSw9EDmM';
+const DEFAULT_HERO_TITLE = 'Out of My Body';
+const DEFAULT_HERO_META = 'Pop fusion - Released this Friday';
+const DEFAULT_HERO_COVER = 'assets/images/out_of_body_spiritual.webp';
+const DEFAULT_HERO_COVER_ALT = 'Featured release artwork for Out of My Body';
 
 document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', handleDocumentClick);
@@ -27,14 +31,205 @@ async function loadTrackManifest() {
       throw new Error('Track manifest is empty');
     }
 
-    grid.innerHTML = tracks.map(renderTrackCard).join('');
+    const activeTracks = tracks.filter((track) => track.status !== 'locked');
+    const lockedTracks = tracks.filter((track) => track.status === 'locked');
+    const sortedActiveTracks = sortTracksByReleaseDate(activeTracks);
+    const featuredTrack = getFeaturedTrack(sortedActiveTracks);
+
+    populateHeroTrack(featuredTrack);
+    grid.innerHTML = [...sortedActiveTracks, ...lockedTracks]
+      .map((track, index) => renderTrackCard(track, index, featuredTrack))
+      .join('');
   } catch (error) {
     grid.innerHTML = '<p class="vault-loading">Unable to load releases right now.</p>';
     console.error('Error loading track manifest:', error);
   }
 }
 
-function renderTrackCard(track, index) {
+function sortTracksByReleaseDate(tracks) {
+  return tracks
+    .map((track, index) => ({
+      track,
+      index,
+      releaseTime: parseReleaseTime(track.releaseDate)
+    }))
+    .sort((left, right) => {
+      if (right.releaseTime !== left.releaseTime) {
+        return right.releaseTime - left.releaseTime;
+      }
+
+      return left.index - right.index;
+    })
+    .map((entry) => entry.track);
+}
+
+function parseReleaseTime(releaseDate) {
+  if (!releaseDate) return 0;
+
+  const parsed = new Date(releaseDate);
+  const time = parsed.getTime();
+  return Number.isNaN(time) ? 0 : time;
+}
+
+function getFeaturedTrack(tracks) {
+  const pinnedTrack = tracks.find((track) => isPinActive(track));
+  if (pinnedTrack) return pinnedTrack;
+
+  return tracks.find((track) => track.featured) || tracks[0] || null;
+}
+
+function isPinActive(track) {
+  const pinnedUntil = track?.pinnedUntil || track?.featuredUntil;
+  if (!pinnedUntil) return false;
+
+  const parsed = new Date(pinnedUntil);
+  const time = parsed.getTime();
+  if (Number.isNaN(time)) return false;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return time >= today.getTime();
+}
+
+function populateHeroTrack(track) {
+  const heroCover = document.getElementById('hero-cover');
+  const heroBadge = document.getElementById('hero-badge');
+  const heroTitle = document.getElementById('hero-title');
+  const heroMeta = document.getElementById('hero-meta');
+  const heroStatusLabel = document.getElementById('hero-status-label');
+  const heroPlayButton = document.getElementById('play-toggle');
+  const heroStreamingLinks = document.getElementById('hero-streaming-links');
+
+  if (!track) {
+    if (heroCover) {
+      heroCover.src = DEFAULT_HERO_COVER;
+      heroCover.alt = DEFAULT_HERO_COVER_ALT;
+    }
+
+    if (heroBadge) {
+      heroBadge.textContent = 'Week 01 Single';
+    }
+
+    if (heroTitle) {
+      heroTitle.textContent = DEFAULT_HERO_TITLE;
+    }
+
+    if (heroMeta) {
+      heroMeta.textContent = DEFAULT_HERO_META;
+    }
+
+    if (heroStatusLabel) {
+      heroStatusLabel.textContent = 'Featured Track';
+    }
+
+    if (heroPlayButton) {
+      heroPlayButton.dataset.trackTitle = DEFAULT_HERO_TITLE;
+      heroPlayButton.dataset.trackYoutubeId = DEFAULT_YOUTUBE_ID;
+      heroPlayButton.setAttribute('aria-label', `Play ${DEFAULT_HERO_TITLE}`);
+    }
+
+    if (heroStreamingLinks) {
+      heroStreamingLinks.innerHTML = renderHeroStreamingLinks({});
+    }
+
+    return;
+  }
+
+  const trackTitle = track.title || DEFAULT_HERO_TITLE;
+  const releaseLabel = formatReleaseDate(track.releaseDate);
+  const trackMeta = track.genre
+    ? `${track.genre}${releaseLabel ? ` - Released ${releaseLabel}` : ''}`
+    : DEFAULT_HERO_META;
+
+  if (heroCover) {
+    heroCover.src = track.cover || DEFAULT_HERO_COVER;
+    heroCover.alt = track.coverAlt || `${trackTitle} cover art`;
+  }
+
+  if (heroBadge) {
+    heroBadge.textContent = track.week || 'Latest Drop';
+  }
+
+  if (heroTitle) {
+    heroTitle.textContent = trackTitle;
+  }
+
+  if (heroMeta) {
+    heroMeta.textContent = trackMeta;
+  }
+
+  if (heroStatusLabel) {
+    heroStatusLabel.textContent = track.featured ? 'Featured Track' : 'Latest Release';
+  }
+
+  if (heroPlayButton) {
+    heroPlayButton.dataset.trackTitle = trackTitle;
+    heroPlayButton.dataset.trackYoutubeId = track.youtubeId || DEFAULT_YOUTUBE_ID;
+    heroPlayButton.setAttribute('aria-label', `Play ${trackTitle}`);
+  }
+
+  if (heroStreamingLinks) {
+    heroStreamingLinks.innerHTML = renderHeroStreamingLinks(track);
+  }
+}
+
+function formatReleaseDate(releaseDate) {
+  if (!releaseDate) return '';
+
+  const parsed = new Date(releaseDate);
+  if (Number.isNaN(parsed.getTime())) return '';
+
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+  }).format(parsed);
+}
+
+function renderHeroStreamingLinks(track) {
+  const providers = [
+    {
+      className: 'spotify',
+      label: 'Spotify',
+      href: track.spotifyUrl || ''
+    },
+    {
+      className: 'youtube',
+      label: 'YouTube Music',
+      href: track.youtubeMusicUrl || ''
+    },
+    {
+      className: 'apple',
+      label: 'Apple Music',
+      href: track.appleMusicUrl || ''
+    },
+    {
+      className: 'hyperfollow',
+      label: 'HyperFollow',
+      href: track.hyperfollowUrl || ''
+    }
+  ];
+
+  return providers.map(renderProviderLink).join('');
+}
+
+function renderProviderLink(provider) {
+  if (provider.href) {
+    return `
+      <a href="${escapeAttribute(provider.href)}" class="btn-stream ${provider.className}" target="_blank" rel="noopener noreferrer">
+        ${escapeHtml(provider.label)}
+      </a>
+    `;
+  }
+
+  return `
+    <span class="btn-stream ${provider.className} is-placeholder" aria-disabled="true">
+      ${escapeHtml(provider.label)} Coming Soon
+    </span>
+  `;
+}
+
+function renderTrackCard(track, index, featuredTrack) {
   if (track.status === 'locked') {
     return `
       <article class="vault-card locked" aria-disabled="true">
@@ -55,9 +250,10 @@ function renderTrackCard(track, index) {
   const youtubeId = track.youtubeId || DEFAULT_YOUTUBE_ID;
   const cover = track.cover || 'assets/images/out_of_body_spiritual.webp';
   const coverAlt = track.coverAlt || `${trackTitle} cover art`;
+  const isHeroTrack = isSameTrack(track, featuredTrack);
 
   return `
-    <article class="vault-card${track.featured ? ' active' : ''}">
+    <article class="vault-card${isHeroTrack ? ' active' : ''}">
       <div class="card-img-holder">
         <button
           class="card-play-btn"
@@ -310,3 +506,49 @@ function escapeHtml(value) {
 function escapeAttribute(value) {
   return escapeHtml(value);
 }
+
+function isSameTrack(left, right) {
+  if (!left || !right) return false;
+
+  if (left.youtubeId && right.youtubeId) {
+    return left.youtubeId === right.youtubeId;
+  }
+
+  return left.title === right.title && left.week === right.week;
+}
+
+
+const scriptURL = 'https://script.google.com/macros/s/AKfycbwrtmQNN7bRaws1emSIfDgiTyfXvoo0mXcaokYx3wKR0n3NIM82WFnvQY2v9A4hsgzL/exec'; // <--- PASTE YOUR URL HERE
+const form = document.getElementById('drop-form');
+const btn = document.getElementById('submit-btn');
+const msg = document.getElementById('response-message');
+
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  
+  // 1. Visual feedback
+  btn.disabled = true;
+  btn.innerText = "Joining...";
+
+  // 2. Prepare data
+  // Using FormData makes it easy to grab all inputs by their "name" attribute
+  let requestBody = new FormData(form);
+
+  // 3. Send to Google
+  fetch(scriptURL, { method: 'POST', body: requestBody})
+    .then(response => {
+       // Success
+       btn.innerText = "You're on the list!";
+       form.reset(); // Clear the inputs
+       msg.innerText = "Success! Watch your inbox for the next drop.";
+       msg.style.display = "block";
+       msg.style.color = "#fff";
+    })
+    .catch(error => {
+       // Error
+       console.error('Error!', error.message);
+       btn.disabled = false;
+       btn.innerText = "Join the Drop List";
+       alert("Something went wrong. Please try again.");
+    });
+});
