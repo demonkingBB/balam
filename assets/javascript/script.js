@@ -206,7 +206,7 @@ function renderHeroStreamingLinks(track) {
     {
       className: 'hyperfollow',
       label: 'HyperFollow',
-      href: track.hyperfollowUrl || ''
+      href: "https://distrokid.com/hyperfollow/ivoleusbalam/yo-voy?ref=release" || ''
     }
   ];
 

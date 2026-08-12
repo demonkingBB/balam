@@ -1,36 +1,36 @@
 {
   "tracks": [
     {
-      "title": "Out of My Body",
-      "week": "WK 01",
-      "genre": "Pop Fusion Divine",
-      "cover": "assets/images/out_of_body_spiritual.webp",
-      "coverAlt": "Out of My Body cover art",
-      "lyrics": "assets/lyrics/out_of_my_body.txt",
-      "youtubeId": "_JkPSw9EDmM",
+      "title": "Yo Voy",
+      "week": "Coming Soon",
+      "genre": "Pop Fusion Reggaeton",
+      "cover": "assets/images/yovoy.webp",
+      "coverAlt": "Yo Voy cover art",
+      "lyrics": "assets/lyrics/yovoy.txt",
+      "youtubeId": "example_id_1",
       "releaseDate": "2026-08-01",
-      "featured": false,
-      "status": "active"
-    },
-
-    {
-      "title": "Not Acting",
-      "week": "WK 02",
-      "genre": "Pop",
-      "cover": "assets/images/not_acting.png",
-      "coverAlt": "Not Acting cover art",
-      "lyrics": "assets/lyrics/not_acting.txt",
-      "youtubeId": "9R724NFdby8",
-      "releaseDate": "2026-08-08",
       "featured": true,
       "status": "active"
     },
 
     {
-      "title": "Track 03",
-      "week": "WK 03",
-      "genre": "Track 03",
-      "cover": "assets/images/track_03.png",
+      "title": "Rebobo",
+      "week": "Coming Soon",
+      "genre": "Coming Aug 28th 2026",
+      "cover": "assets/images/rebobo.webp",
+      "coverAlt": "Rebobo cover art",
+      "lyrics": "assets/lyrics/rebobo.txt",
+      "youtubeId": "example_id_2",
+      "releaseDate": "2026-07-28",
+      "featured": true,
+      "status": "active"
+    },
+
+    {
+      "title": "Shadow Team",
+      "week": "Coming Soon",
+      "genre": "Coming Sept 4th 2026",
+      "cover": "assets/images/shadowteam.webp",
       "coverAlt": "Track 03 cover art",
       "lyrics": "assets/lyrics/track_03.txt",
       "youtubeId": "example_id_3",
