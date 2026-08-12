@@ -8,7 +8,7 @@
       "coverAlt": "Yo Voy cover art",
       "lyrics": "assets/lyrics/yovoy.txt",
       "youtubeId": "example_id_1",
-      "releaseDate": "2026-08-01",
+      "releaseDate": "2026/08/21",
       "featured": true,
       "status": "active"
     },
@@ -21,7 +21,7 @@
       "coverAlt": "Rebobo cover art",
       "lyrics": "assets/lyrics/rebobo.txt",
       "youtubeId": "example_id_2",
-      "releaseDate": "2026-07-28",
+      "releaseDate": "coming soon",
       "featured": true,
       "status": "active"
     },
@@ -34,7 +34,7 @@
       "coverAlt": "Track 03 cover art",
       "lyrics": "assets/lyrics/track_03.txt",
       "youtubeId": "example_id_3",
-      "releaseDate": "2026-07-25",
+      "releaseDate": "coming soon",
       "featured": false,
       "status": "active"
     },
