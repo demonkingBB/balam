@@ -38,11 +38,24 @@
       "featured": false,
       "status": "active"
     },
+{
+      "title": "WebStar",
+      "week": "Coming Soon",
+      "genre": "Coming Sept 18th 2026",
+      "cover": "assets/images/webstar.webp",
+      "coverAlt": "Track 04 cover art",
+      "lyrics": "assets/lyrics/track_03.txt",
+      "youtubeId": "example_id_3",
+      "releaseDate": "coming soon",
+      "featured": false,
+      "status": "active"
+    },
+
 
     {
-      "title": "Coming Soon",
-      "week": "WK 03",
-      "genre": "Track 03",
+      "title": "WEBSTAR",
+      "week": "WK 05",
+      "genre": "Track 05",
       "lockedLabel": "Unlocks Next Friday",
       "status": "locked"
     }
