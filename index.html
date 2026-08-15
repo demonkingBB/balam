@@ -49,7 +49,7 @@ src="https://www.facebook.com/tr?id=1339249984859421&ev=PageView&noscript=1"
       <a href="#featured">Latest Drop</a>
       <a href="#vault">The Vault</a>
       <a href="#about">Origin</a>
-      <a class="nav-link-subtle" href="#lore">Lore Thread</a>
+      <a class="nav-link-subtle" href="lore.html">Lore Thread</a>
       <a href="#subscribe" class="btn-primary-sm">Get Drop Alerts</a>
     </nav>
   </header>
@@ -91,8 +91,44 @@ src="https://www.facebook.com/tr?id=1339249984859421&ev=PageView&noscript=1"
     <section id="vault" class="vault-section">
       <div class="section-header">
         <p class="section-kicker">Weekly releases</p>
-        <h2>The 52-Week Vault</h2>
+        <h2>The Weekly Vault</h2>
         <p>One new track every Friday. Open lyrics, explore concept art, and keep the lore in the background until it earns its own space.</p>
+      </div>
+
+      <div class="vault-tools" aria-label="Vault search and filters">
+        <label class="vault-search">
+          <span class="sr-only">Search the vault</span>
+          <input id="vault-search-input" type="search" placeholder="Search songs, genres, or week..." autocomplete="off">
+        </label>
+
+        <div class="vault-filters" role="tablist" aria-label="Vault filters">
+          <button class="vault-filter is-active" type="button" data-filter="all" aria-pressed="true">All</button>
+          <button class="vault-filter" type="button" data-filter="featured" aria-pressed="false">Featured</button>
+          <button class="vault-filter" type="button" data-filter="pinned" aria-pressed="false">Pinned</button>
+          <button class="vault-filter" type="button" data-filter="active" aria-pressed="false">Active</button>
+        </div>
+
+        <div class="vault-selects" aria-label="Vault categories">
+          <label class="vault-select">
+            <span class="sr-only">Filter by year</span>
+            <select id="vault-year-filter">
+              <option value="all">All Years</option>
+            </select>
+          </label>
+
+          <label class="vault-select">
+            <span class="sr-only">Filter by genre</span>
+            <select id="vault-genre-filter">
+              <option value="all">All Genres</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="vault-actions">
+          <button id="vault-reset-filters" class="vault-reset-btn" type="button">Reset Filters</button>
+        </div>
+
+        <p id="vault-results-count" class="vault-results-count" aria-live="polite">Loading releases...</p>
       </div>
 
       <div id="vault-grid" class="grid-container" aria-live="polite">
@@ -115,7 +151,7 @@ src="https://www.facebook.com/tr?id=1339249984859421&ev=PageView&noscript=1"
           <h2>Story, comic, anime lore</h2>
           <p>Keep this connected to the music world, but let it read like a side archive instead of the main headline. Use it for sketches, character sheets, chapter art, and lore notes.</p>
         </div>
-        <a href="#" class="btn-lore" aria-label="Open the future lore archive">Preview lore archive</a>
+        <a href="lore.html" class="btn-lore" aria-label="Open the lore archive">Preview lore archive</a>
       </div>
     </section>
   </main>

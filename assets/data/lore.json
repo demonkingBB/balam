@@ -1,0 +1,56 @@
+{
+  "chapters": [
+    {
+      "id": "genesis-draft",
+      "title": "Volume I: Genesis Draft",
+      "type": "Chapter",
+      "tag": "Origin",
+      "image": "assets/images/ivoleus.png",
+      "imageAlt": "Lore chapter art placeholder",
+      "summary": "The first pass at the world. This is where the tone, symbols, and first questions enter the archive.",
+      "detailsFile": "assets/lore/chapters/genesis-draft.txt",
+      "audioStoryUrl": "",
+      "relatedTrackIds": ["yo-voy"],
+      "relatedCharacterIds": ["the-voice"]
+    },
+    {
+      "id": "the-turning",
+      "title": "Volume II: The Turning",
+      "type": "Volume",
+      "tag": "Escalation",
+      "image": "assets/images/logo.png",
+      "imageAlt": "Lore chapter art placeholder",
+      "summary": "The world starts answering back. Characters and conflicts begin to split into their own arcs.",
+      "detailsFile": "assets/lore/chapters/the-turning.txt",
+      "audioStoryUrl": "",
+      "relatedTrackIds": ["rebobo"],
+      "relatedCharacterIds": ["the-mirror"]
+    }
+  ],
+
+
+  "characters": [
+    {
+      "id": "xarath",
+      "title": "Xarath",
+      "role": "anti-hero",
+      "image": "assets/lore/images/xarath.webp",
+      "imageAlt": "Character portrait placeholder",
+      "summary": "A presence that threads the songs and story together.",
+      "detailsFile": "assets/lore/characters/xarath.txt",
+      "relatedTrackIds": ["yo-voy"],
+      "relatedChapterIds": ["genesis-draft"]
+    },
+    {
+      "id": "the-mirror",
+      "title": "The Mirror",
+      "role": "Watcher / Counterpart",
+      "image": "assets/images/rebobo.webp",
+      "imageAlt": "Character portrait placeholder",
+      "summary": "Reflects the tension between identity, performance, and truth.",
+      "detailsFile": "assets/lore/characters/the-mirror.txt",
+      "relatedTrackIds": ["rebobo"],
+      "relatedChapterIds": ["the-turning"]
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="IVOLEUS BALAM lore archive with story chapters, characters, and worldbuilding notes.">
+  <meta property="og:title" content="Ivoleus Lore Archive" />
+  <meta property="og:description" content="Story chapters, characters, and world notes from the IVOLEUS BALAM universe." />
+  <meta property="og:image" content="https://ivoleusbalam.com/assets/images/ivoleus.png" />
+  <meta property="og:url" content="https://ivoleusbalam.com/lore.html" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ivoleusbalam.com/assets/images/ivoleus.png" />
+  <title>IVOLEUS BALAM | Lore Archive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="assets/style/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="lore-page">
+  <a class="skip-link" href="#lore-archive">Skip to content</a>
+
+  <header class="navbar">
+    <div class="logo-container">
+      <img src="assets/images/logo.png" alt="Ivoleus Balam emblem" class="nav-logo">
+    </div>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html#featured">Home</a>
+      <a href="index.html#vault">Vault</a>
+      <a href="lore.html" aria-current="page">Lore Thread</a>
+      <a href="index.html#subscribe" class="btn-primary-sm">Get Drop Alerts</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="lore-hero">
+      <div class="lore-hero-overlay" aria-hidden="true"></div>
+      <div class="lore-hero-inner">
+        <p class="section-kicker">Lore Archive</p>
+        <h1>Stories, characters, and world notes</h1>
+        <p>This is the side archive for the IVOLEUS BALAM universe. Add chapters, cast notes, chapter art, and audio story pieces here as the world expands.</p>
+      </div>
+    </section>
+
+    <section class="lore-section">
+      <div class="section-header">
+        <p class="section-kicker">Story line</p>
+        <h2>Volumes & Chapters</h2>
+        <p>Each card can open for a fuller read, like your lyrics drawer, so you can keep the page clean while still making the lore feel rich.</p>
+      </div>
+      <div id="lore-chapters-grid" class="lore-grid" aria-live="polite">
+        <p class="vault-loading">Loading chapters...</p>
+      </div>
+    </section>
+
+    <section class="lore-section">
+      <div class="section-header">
+        <p class="section-kicker">Cast list</p>
+        <h2>Characters</h2>
+        <p>Character cards can hold portraits, roles, and deeper notes without needing a search bar or extra clutter yet.</p>
+      </div>
+      <div id="lore-characters-grid" class="lore-grid" aria-live="polite">
+        <p class="vault-loading">Loading characters...</p>
+      </div>
+    </section>
+  </main>
+
+  <footer id="subscribe" class="site-footer">
+    <div class="footer-content">
+      <h3>Never Miss a Friday Drop</h3>
+      <p>Direct group messaging and email alerts for every weekly release.</p>
+      <form class="subscribe-form" id="drop-form">
+        <label class="sr-only" for="subscriber-name">Your name</label>
+        <input id="subscriber-name" name="name" type="text" placeholder="Your Name" required>
+        <label class="sr-only" for="subscriber-email">Your email</label>
+        <input id="subscriber-email" name="email" type="email" placeholder="Your Email" required>
+        <button type="submit" class="btn-submit" id="submit-btn">Join the Drop List</button>
+      </form>
+      <div id="response-message" style="display:none; margin-top: 15px;"></div>
+      <p class="copyright">&copy; 2026 IVOLEUS BALAM. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="assets/javascript/script.js"></script>
+  <script src="assets/javascript/lore.js"></script>
+</body>
+</html>

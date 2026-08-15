@@ -1,6 +1,7 @@
 {
   "tracks": [
     {
+      "id": "yo-voy",
       "title": "Yo Voy",
       "week": "Coming Soon",
       "genre": "Pop Fusion Reggaeton",
@@ -8,12 +9,16 @@
       "coverAlt": "Yo Voy cover art",
       "lyrics": "assets/lyrics/yovoy.txt",
       "youtubeId": "example_id_1",
-      "releaseDate": "2026/08/21",
+      "hyperfollowUrl": "https://distrokid.com/hyperfollow/ivoleusbalam/yo-voy?ref=release",
+      "releaseDate": "2026-08-21",
+      "pinnedUntil": "2026-08-28",
       "featured": true,
+      "relatedLoreIds": ["genesis-draft", "the-voice"],
       "status": "active"
     },
 
     {
+      "id": "rebobo",
       "title": "Rebobo",
       "week": "Coming Soon",
       "genre": "Coming Aug 28th 2026",
@@ -21,42 +26,49 @@
       "coverAlt": "Rebobo cover art",
       "lyrics": "assets/lyrics/rebobo.txt",
       "youtubeId": "example_id_2",
-      "releaseDate": "coming soon",
-      "featured": true,
+      "releaseDate": "2026-08-28",
+      "featured": false,
+      "relatedLoreIds": ["the-turning", "the-mirror"],
       "status": "active"
     },
 
     {
+      "id": "shadow-team",
       "title": "Shadow Team",
       "week": "Coming Soon",
       "genre": "Coming Sept 4th 2026",
       "cover": "assets/images/shadowteam.webp",
       "coverAlt": "Track 03 cover art",
-      "lyrics": "assets/lyrics/track_03.txt",
+      "lyrics": "",
       "youtubeId": "example_id_3",
-      "releaseDate": "coming soon",
+      "releaseDate": "2026-09-04",
       "featured": false,
+      "relatedLoreIds": [],
       "status": "active"
     },
 {
+      "id": "webstar",
       "title": "WebStar",
       "week": "Coming Soon",
       "genre": "Coming Sept 18th 2026",
       "cover": "assets/images/webstar.webp",
       "coverAlt": "Track 04 cover art",
-      "lyrics": "assets/lyrics/track_03.txt",
+      "lyrics": "",
       "youtubeId": "example_id_3",
-      "releaseDate": "coming soon",
+      "releaseDate": "2026-09-18",
       "featured": false,
+      "relatedLoreIds": [],
       "status": "active"
     },
 
 
     {
+      "id": "webstar-locked",
       "title": "WEBSTAR",
       "week": "WK 05",
       "genre": "Track 05",
       "lockedLabel": "Unlocks Next Friday",
+      "relatedLoreIds": [],
       "status": "locked"
     }
   ]

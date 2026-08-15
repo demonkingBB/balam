@@ -1,0 +1,3 @@
+This card can hold a longer chapter summary, notes about scenes, or a text block you want hidden until opened.
+
+If you ever want a cover image for each volume, drop it here and the layout will keep working.
