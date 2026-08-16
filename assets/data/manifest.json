@@ -1,7 +1,7 @@
 {
   "name": "Balam Music",
   "short_name": "Balam",
-  "start_url": "assets/images/logo.png",
+  "start_url": "../assets/images/logo.png",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
