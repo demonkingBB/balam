@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Full IVOLEUS BALAM lore chapter and character entry.">
+  <title>IVOLEUS BALAM | Lore Reader</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="assets/style/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="lore-page lore-reader-page">
+  <a class="skip-link" href="#reader-content">Skip to story</a>
+
+  <header class="navbar">
+    <div class="logo-container">
+      <img src="assets/images/logo.png" alt="Ivoleus Balam emblem" class="nav-logo">
+    </div>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html#featured">Home</a>
+      <a href="index.html#vault">Vault</a>
+      <a href="lore.html">Lore Thread</a>
+      <a href="index.html#subscribe" class="btn-primary-sm">Get Drop Alerts</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="lore-reader-hero">
+      <div class="lore-reader-inner">
+        <a class="lore-reader-back" href="lore.html">Back to Lore Archive</a>
+        <div class="lore-reader-heading">
+          <img id="reader-cover" src="assets/images/ivoleus.png" alt="Lore artwork" class="lore-reader-cover">
+          <div class="lore-reader-heading-copy">
+            <p id="reader-meta" class="section-kicker">Lore Entry</p>
+            <h1 id="reader-title">Loading lore...</h1>
+            <p id="reader-summary" class="lore-reader-summary">Loading the full entry.</p>
+            <div id="reader-audio" class="lore-reader-audio"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="lore-reader-section">
+      <p id="reader-loading" class="vault-loading">Loading the full entry...</p>
+      <p id="reader-error" class="vault-loading" hidden>That lore entry could not be found.</p>
+
+      <article id="reader-article" class="lore-reader-article" hidden>
+        <p class="section-kicker">Full Entry</p>
+        <div id="reader-content" class="lore-reader-text"></div>
+        <div id="reader-related" class="lore-reader-related"></div>
+        <nav id="reader-navigation" class="lore-reader-navigation" aria-label="Lore navigation" hidden>
+          <a id="reader-previous" class="lore-reader-nav-link" href=""></a>
+          <a id="reader-next" class="lore-reader-nav-link lore-reader-nav-link-next" href=""></a>
+        </nav>
+      </article>
+    </section>
+  </main>
+
+  <footer id="subscribe" class="site-footer">
+    <div class="footer-content">
+      <h3>Never Miss a Friday Drop</h3>
+      <p>Direct group messaging and email alerts for every weekly release.</p>
+      <form class="subscribe-form" id="drop-form">
+        <label class="sr-only" for="subscriber-name">Your name</label>
+        <input id="subscriber-name" name="name" type="text" placeholder="Your Name" required>
+        <label class="sr-only" for="subscriber-email">Your email</label>
+        <input id="subscriber-email" name="email" type="email" placeholder="Your Email" required>
+        <button type="submit" class="btn-submit" id="submit-btn">Join the Drop List</button>
+      </form>
+      <div id="response-message" style="display:none; margin-top: 15px;"></div>
+      <p class="copyright">&copy; 2026 IVOLEUS BALAM. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="assets/javascript/script.js"></script>
+  <script src="assets/javascript/lore-reader.js"></script>
+</body>
+</html>

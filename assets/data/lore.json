@@ -9,8 +9,8 @@
       "imageAlt": "Lore chapter art placeholder",
       "summary": "The first pass at the world. This is where the tone, symbols, and first questions enter the archive.",
       "detailsFile": "assets/lore/chapters/genesis-draft.txt",
-      "audioStoryUrl": "",
-      "relatedTrackIds": ["yo-voy"],
+      "audioStoryUrl": "https://youtu.be/pVL4Os2sn0I",
+      "relatedTrackIds": ["genesis-instrumental"],
       "relatedCharacterIds": ["the-voice"]
     },
     {

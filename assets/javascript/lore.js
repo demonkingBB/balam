@@ -87,7 +87,10 @@ function renderLoreCard(entry, kind) {
   const relatedChapterIds = kind === 'chapter'
     ? Array.isArray(entry.relatedCharacterIds) ? entry.relatedCharacterIds : []
     : Array.isArray(entry.relatedChapterIds) ? entry.relatedChapterIds : [];
-  const audioStoryUrl = entry.audioStoryUrl || '';
+  const audioContent = renderLoreAudio(entry);
+  const readerLink = entry.id && detailsSource
+    ? `<a class="lore-read-link" href="${escapeAttribute(`lore-reader.html?id=${encodeURIComponent(entry.id)}`)}">Read Full ${kind === 'chapter' ? 'Chapter' : 'Entry'}</a>`
+    : '';
 
   return `
     <article${cardId ? ` id="${escapeAttribute(cardId)}"` : ''} class="lore-card" data-lore-id="${escapeAttribute(entry.id || '')}">
@@ -109,20 +112,81 @@ function renderLoreCard(entry, kind) {
           aria-controls="${drawerId}">
           Open Lore
         </button>
+        ${readerLink}
       </div>
       <div id="${drawerId}" class="lore-drawer" hidden>
         <h4>${escapeHtml(title)}</h4>
         <pre class="lore-drawer-content">Click to load lore...</pre>
-        ${audioStoryUrl ? `
-          <div class="lore-audio">
-            <audio controls preload="none" src="${escapeAttribute(audioStoryUrl)}"></audio>
-          </div>
-        ` : ''}
+        ${audioContent}
         ${renderRelatedLinks('Related Songs', relatedTrackIds, 'track')}
         ${renderRelatedLinks(kind === 'chapter' ? 'Related Characters' : 'Related Chapters', relatedChapterIds, kind === 'chapter' ? 'lore' : 'lore')}
       </div>
     </article>
   `;
+}
+
+function renderLoreAudio(entry) {
+  const stories = Array.isArray(entry.audioStories)
+    ? entry.audioStories
+    : entry.audioStoryUrl
+      ? [{ label: 'Audio Story', url: entry.audioStoryUrl }]
+      : [];
+
+  return stories.map((story, index) => {
+    const storyData = typeof story === 'string' ? { url: story } : story || {};
+    const url = String(storyData.url || '').trim();
+    if (!url) return '';
+
+    const label = storyData.label || `Audio Story${stories.length > 1 ? ` ${index + 1}` : ''}`;
+    const youtubeId = getYoutubeVideoId(url);
+
+    if (youtubeId) {
+      return `
+        <div class="lore-audio lore-youtube">
+          <p class="lore-audio-label">${escapeHtml(label)}</p>
+          <div class="lore-youtube-frame">
+            <iframe
+              src="https://www.youtube-nocookie.com/embed/${escapeAttribute(youtubeId)}?rel=0"
+              title="${escapeAttribute(label)}"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen></iframe>
+          </div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="lore-audio">
+        <p class="lore-audio-label">${escapeHtml(label)}</p>
+        <audio controls preload="none" aria-label="${escapeAttribute(label)}" src="${escapeAttribute(url)}"></audio>
+      </div>
+    `;
+  }).join('');
+}
+
+function getYoutubeVideoId(value) {
+  try {
+    const parsedUrl = new URL(value, window.location.href);
+    const hostname = parsedUrl.hostname.toLowerCase().replace(/^www\./, '');
+    let candidate = '';
+
+    if (hostname === 'youtu.be') {
+      candidate = parsedUrl.pathname.split('/').filter(Boolean)[0] || '';
+    } else if (hostname === 'youtube.com' || hostname === 'm.youtube.com') {
+      if (parsedUrl.pathname === '/watch') {
+        candidate = parsedUrl.searchParams.get('v') || '';
+      } else {
+        const pathMatch = parsedUrl.pathname.match(/^\/(?:embed|shorts)\/([^/]+)/);
+        candidate = pathMatch ? pathMatch[1] : '';
+      }
+    }
+
+    const idMatch = candidate.match(/[A-Za-z0-9_-]{11}/);
+    return idMatch ? idMatch[0] : '';
+  } catch (error) {
+    return '';
+  }
 }
 
 function renderRelatedLinks(label, ids, kind) {
