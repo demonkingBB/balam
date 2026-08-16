@@ -278,9 +278,21 @@ function sortTracksByReleaseDate(tracks) {
 function parseReleaseTime(releaseDate) {
   if (!releaseDate) return 0;
 
-  const parsed = new Date(releaseDate);
+  const parsed = parseReleaseDate(releaseDate);
   const time = parsed.getTime();
   return Number.isNaN(time) ? 0 : time;
+}
+
+function parseReleaseDate(releaseDate) {
+  const value = String(releaseDate || '').trim();
+  const dateOnlyMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+
+  if (dateOnlyMatch) {
+    const [, year, month, day] = dateOnlyMatch;
+    return new Date(Number(year), Number(month) - 1, Number(day));
+  }
+
+  return new Date(value);
 }
 
 function getFeaturedTrack(tracks) {
@@ -294,7 +306,7 @@ function isPinActive(track) {
   const pinnedUntil = track?.pinnedUntil;
   if (!pinnedUntil) return false;
 
-  const parsed = new Date(pinnedUntil);
+  const parsed = parseReleaseDate(pinnedUntil);
   const time = parsed.getTime();
   if (Number.isNaN(time)) return false;
 
@@ -304,6 +316,7 @@ function isPinActive(track) {
 }
 
 function populateHeroTrack(track) {
+  const heroEyebrow = document.getElementById('hero-eyebrow');
   const heroCover = document.getElementById('hero-cover');
   const heroBadge = document.getElementById('hero-badge');
   const heroTitle = document.getElementById('hero-title');
@@ -334,6 +347,10 @@ function populateHeroTrack(track) {
       heroStatusLabel.textContent = 'Featured Track';
     }
 
+    if (heroEyebrow) {
+      heroEyebrow.textContent = 'Official Release';
+    }
+
     if (heroPlayButton) {
       heroPlayButton.dataset.trackTitle = DEFAULT_HERO_TITLE;
       heroPlayButton.dataset.trackYoutubeId = DEFAULT_YOUTUBE_ID;
@@ -344,13 +361,17 @@ function populateHeroTrack(track) {
       heroStreamingLinks.innerHTML = renderHeroStreamingLinks({});
     }
 
+    configureHeroPlayer(null, 'video');
+
     return;
   }
 
   const trackTitle = track.title || DEFAULT_HERO_TITLE;
   const releaseLabel = formatReleaseDate(track.releaseDate);
+  const heroMode = getHeroPlaybackMode(track);
+  const isUpcoming = heroMode === 'preview';
   const trackMeta = track.genre
-    ? `${track.genre}${releaseLabel ? ` - Released ${releaseLabel}` : ''}`
+    ? `${track.genre}${releaseLabel ? ` - ${isUpcoming ? 'Coming' : 'Released'} ${releaseLabel}` : ''}`
     : DEFAULT_HERO_META;
 
   if (heroCover) {
@@ -370,8 +391,14 @@ function populateHeroTrack(track) {
     heroMeta.textContent = trackMeta;
   }
 
+  if (heroEyebrow) {
+    heroEyebrow.textContent = isUpcoming ? 'Coming Soon Preview' : 'Official Release';
+  }
+
   if (heroStatusLabel) {
-    heroStatusLabel.textContent = isPinActive(track) ? 'Pinned Release' : track.featured ? 'Featured Track' : 'Latest Release';
+    heroStatusLabel.textContent = isUpcoming
+      ? 'Preview Track'
+      : isPinActive(track) ? 'Pinned Release' : track.featured ? 'Featured Track' : 'Latest Release';
   }
 
   if (heroPlayButton) {
@@ -383,12 +410,14 @@ function populateHeroTrack(track) {
   if (heroStreamingLinks) {
     heroStreamingLinks.innerHTML = renderHeroStreamingLinks(track);
   }
+
+  configureHeroPlayer(track, heroMode);
 }
 
 function formatReleaseDate(releaseDate) {
   if (!releaseDate) return '';
 
-  const parsed = new Date(releaseDate);
+  const parsed = parseReleaseDate(releaseDate);
   if (Number.isNaN(parsed.getTime())) return '';
 
   return new Intl.DateTimeFormat('en-US', {
@@ -400,14 +429,67 @@ function formatReleaseDate(releaseDate) {
 
 function normalizeYoutubeId(value) {
   const candidate = String(value || '').trim();
-  return /^[A-Za-z0-9_-]{11}$/.test(candidate) ? candidate : DEFAULT_YOUTUBE_ID;
+  return isValidYoutubeId(candidate) ? candidate : DEFAULT_YOUTUBE_ID;
 }
 
 function buildYoutubeMusicUrl(value) {
   const candidate = String(value || '').trim();
-  if (!/^[A-Za-z0-9_-]{11}$/.test(candidate)) return '';
+  if (!isValidYoutubeId(candidate)) return '';
 
   return `https://music.youtube.com/watch?v=${encodeURIComponent(candidate)}`;
+}
+
+function isValidYoutubeId(value) {
+  return /^[A-Za-z0-9_-]{11}$/.test(String(value || '').trim());
+}
+
+function isTrackUpcoming(track) {
+  const releaseTime = parseReleaseTime(track?.releaseDate);
+  if (releaseTime && releaseTime > Date.now()) return true;
+
+  return /coming soon|upcoming|preview/i.test(`${track?.week || ''} ${track?.status || ''}`);
+}
+
+function getHeroPlaybackMode(track) {
+  const previewAudioPath = String(track?.previewAudio || '').trim();
+  if (!previewAudioPath) return 'video';
+
+  const requestedMode = String(track?.heroMode || 'auto').trim().toLowerCase();
+  if (requestedMode === 'preview') return 'preview';
+  if (requestedMode === 'video' && isValidYoutubeId(track?.youtubeId)) return 'video';
+
+  return isTrackUpcoming(track) || !isValidYoutubeId(track?.youtubeId) ? 'preview' : 'video';
+}
+
+function configureHeroPlayer(track, mode) {
+  const videoPlayer = document.getElementById('hero-video-player');
+  const previewPlayer = document.getElementById('hero-preview-player');
+  const previewAudio = document.getElementById('hero-preview-audio');
+  const previewAudioPath = String(track?.previewAudio || '').trim();
+  const isPreview = mode === 'preview' && previewAudioPath;
+
+  if (videoPlayer) {
+    videoPlayer.hidden = Boolean(isPreview);
+  }
+
+  if (previewPlayer) {
+    previewPlayer.hidden = !isPreview;
+  }
+
+  if (!previewAudio) return;
+
+  if (isPreview) {
+    if (previewAudio.getAttribute('src') !== previewAudioPath) {
+      previewAudio.src = previewAudioPath;
+      previewAudio.load();
+    }
+    previewAudio.setAttribute('aria-label', `${track.title || DEFAULT_HERO_TITLE} preview`);
+    return;
+  }
+
+  previewAudio.pause();
+  previewAudio.removeAttribute('src');
+  previewAudio.load();
 }
 
 function renderHeroStreamingLinks(track) {
@@ -476,8 +558,10 @@ function renderTrackCard(track, index, featuredTrack) {
   const youtubeId = normalizeYoutubeId(track.youtubeId);
   const cover = track.cover || 'assets/images/out_of_body_spiritual.webp';
   const coverAlt = track.coverAlt || `${trackTitle} cover art`;
+  const previewAudioPath = String(track.previewAudio || '').trim();
   const lyricsPath = String(track.lyrics || '').trim();
   const isHeroTrack = isSameTrack(track, featuredTrack);
+  const cardPreviewPath = isHeroTrack ? '' : previewAudioPath;
 
   return `
     <article${trackAnchorId ? ` id="${escapeAttribute(trackAnchorId)}" data-track-id="${escapeAttribute(track.id)}"` : ''} class="vault-card${isHeroTrack ? ' active' : ''}">
@@ -497,6 +581,12 @@ function renderTrackCard(track, index, featuredTrack) {
       <div class="card-info">
         <h3>${escapeHtml(trackTitle)}</h3>
         <p class="genre">${escapeHtml(track.genre || 'Track')}</p>
+        ${cardPreviewPath ? `
+          <div class="track-preview">
+            <span class="track-preview-label">Preview</span>
+            <audio controls preload="none" aria-label="${escapeAttribute(`${trackTitle} preview`)}" src="${escapeAttribute(previewAudioPath)}"></audio>
+          </div>
+        ` : ''}
         ${lyricsPath ? `
           <button
             class="btn-lyrics"
