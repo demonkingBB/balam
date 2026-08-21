@@ -363,7 +363,7 @@ function populateHeroTrack(track) {
   }
 
   if (heroBadge) {
-    heroBadge.textContent = track.week || 'Latest Drop';
+    heroBadge.textContent = getTrackBadgeLabel(track, 0);
   }
 
   if (heroTitle) {
@@ -412,22 +412,24 @@ function buildYoutubeEmbedUrl(value) {
   return `https://www.youtube.com/embed/${encodeURIComponent(candidate)}?playsinline=1&controls=1&autoplay=0&rel=0`;
 }
 
-function buildYoutubeWatchUrl(value) {
-  const candidate = String(value || '').trim();
-  if (!isValidYoutubeId(candidate)) return '';
-
-  return `https://www.youtube.com/watch?v=${encodeURIComponent(candidate)}`;
-}
-
 function isValidYoutubeId(value) {
   return /^[A-Za-z0-9_-]{11}$/.test(String(value || '').trim());
 }
 
 function isTrackUpcoming(track) {
   const releaseTime = parseReleaseTime(track?.releaseDate);
-  if (releaseTime && releaseTime > Date.now()) return true;
+  if (releaseTime) return releaseTime > Date.now();
 
   return /coming soon|upcoming|preview/i.test(`${track?.week || ''} ${track?.status || ''}`);
+}
+
+function getTrackBadgeLabel(track, index) {
+  const configuredLabel = String(track?.week || '').trim();
+  const isStaleComingSoonLabel = !isTrackUpcoming(track)
+    && /coming soon|upcoming|preview/i.test(configuredLabel);
+
+  if (isStaleComingSoonLabel) return 'Released';
+  return configuredLabel || `WK ${String(index + 1).padStart(2, '0')}`;
 }
 
 function getHeroPlaybackMode(track) {
@@ -554,23 +556,23 @@ function renderTrackCard(track, index, featuredTrack) {
 
   const drawerId = `lyrics-${index + 1}`;
   const trackTitle = track.title || 'Untitled track';
-  const youtubeWatchUrl = buildYoutubeWatchUrl(track.youtubeId);
+  const youtubeId = String(track.youtubeId || '').trim();
   const cover = track.cover || 'assets/images/out_of_body_spiritual.webp';
   const coverAlt = track.coverAlt || `${trackTitle} cover art`;
   const previewAudioPath = String(track.previewAudio || '').trim();
   const lyricsPath = String(track.lyrics || '').trim();
   const isHeroTrack = isSameTrack(track, featuredTrack);
   const cardPreviewPath = isHeroTrack ? '' : previewAudioPath;
-  const cardVideoControl = !isHeroTrack && youtubeWatchUrl
+  const cardVideoControl = isValidYoutubeId(youtubeId)
     ? `
-      <a
+      <button
         class="card-play-btn"
-        href="${escapeAttribute(youtubeWatchUrl)}"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Watch ${escapeHtml(trackTitle)} on YouTube">
-        <span class="card-play-chip" aria-hidden="true">Watch on YouTube</span>
-      </a>
+        type="button"
+        data-card-youtube-id="${escapeAttribute(youtubeId)}"
+        data-card-youtube-title="${escapeAttribute(trackTitle)}"
+        aria-label="Show ${escapeHtml(trackTitle)} YouTube video">
+        <span class="card-play-chip" aria-hidden="true">Watch Video</span>
+      </button>
     `
     : '';
 
@@ -579,7 +581,7 @@ function renderTrackCard(track, index, featuredTrack) {
       <div class="card-img-holder">
         ${cardVideoControl}
         <img src="${escapeAttribute(cover)}" alt="${escapeAttribute(coverAlt)}" loading="lazy">
-        <span class="week-tag">${escapeHtml(track.week || `WK ${String(index + 1).padStart(2, '0')}`)}</span>
+        <span class="week-tag">${escapeHtml(getTrackBadgeLabel(track, index))}</span>
       </div>
       <div class="card-info">
         <h3>${escapeHtml(trackTitle)}</h3>
@@ -611,6 +613,12 @@ function renderTrackCard(track, index, featuredTrack) {
 }
 
 function handleVaultDocumentClick(event) {
+  const youtubeButton = event.target.closest('[data-card-youtube-id]');
+  if (youtubeButton) {
+    activateCardYoutubeEmbed(youtubeButton);
+    return;
+  }
+
   const lyricsButton = event.target.closest('.btn-lyrics');
   if (lyricsButton) {
     const drawerId = lyricsButton.dataset.lyricsTarget;
@@ -620,7 +628,29 @@ function handleVaultDocumentClick(event) {
     }
     return;
   }
+}
 
+function activateCardYoutubeEmbed(button) {
+  const cardImageHolder = button.closest('.card-img-holder');
+  const youtubeId = button.dataset.cardYoutubeId;
+  const trackTitle = button.dataset.cardYoutubeTitle || 'Track';
+  const embedUrl = buildYoutubeEmbedUrl(youtubeId);
+
+  if (!cardImageHolder || !embedUrl || cardImageHolder.querySelector('.card-youtube-embed')) {
+    return;
+  }
+
+  const youtubeEmbed = document.createElement('iframe');
+  youtubeEmbed.className = 'card-youtube-embed';
+  youtubeEmbed.title = `${trackTitle} YouTube video`;
+  youtubeEmbed.loading = 'lazy';
+  youtubeEmbed.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+  youtubeEmbed.allowFullscreen = true;
+  youtubeEmbed.src = embedUrl;
+
+  cardImageHolder.classList.add('is-youtube-embedded');
+  cardImageHolder.insertBefore(youtubeEmbed, cardImageHolder.firstChild);
+  button.remove();
 }
 
 async function toggleAndFetchLyrics(button, drawerId, filePath) {
