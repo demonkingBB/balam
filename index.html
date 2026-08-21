@@ -85,20 +85,20 @@ src="https://www.facebook.com/tr?id=1339249984859421&ev=PageView&noscript=1"
           <p id="hero-meta" class="track-meta">Pop fusion - Released this Friday</p>
 
           <div class="audio-container">
-            <div id="hero-video-player">
-              <div class="custom-audio-player">
-                <button class="play-btn" id="play-toggle" type="button" aria-label="Play featured track" aria-controls="youtube-audio-player" aria-describedby="player-status-text" data-play-track="true" data-track-title="Out of My Body" data-track-youtube-id="_JkPSw9EDmM">
-                  <span id="ytPlayIcon" aria-hidden="true">Play</span>
-                </button>
-                <div class="player-status">
-                  <strong id="hero-status-label">Featured Track</strong>
-                  <p id="player-status-text">Loading YouTube player...</p>
-                </div>
+            <div id="hero-video-player" hidden>
+              <div class="hero-youtube-frame">
+                <iframe
+                  id="hero-youtube-embed"
+                  title="Featured YouTube video"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen></iframe>
               </div>
+              <p class="hero-video-note">Play with YouTube's native controls.</p>
+            </div>
 
-              <div class="yt-player-shell" aria-hidden="true">
-                <div id="youtube-audio-player"></div>
-              </div>
+            <div id="hero-video-placeholder" class="hero-video-placeholder" hidden>
+              The official video will appear here when it is ready.
             </div>
 
             <div id="hero-preview-player" class="hero-preview-player" hidden>
@@ -250,7 +250,6 @@ src="https://www.facebook.com/tr?id=1339249984859421&ev=PageView&noscript=1"
   </div>
 </footer>
 
-  <script src="https://www.youtube.com/iframe_api"></script>
   <script src="assets/javascript/script.js"></script>
 
 <script>
