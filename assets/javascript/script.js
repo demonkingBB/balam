@@ -765,3 +765,35 @@ function setupDropForm() {
       });
   });
 }
+
+// Dropdown Menu Interaction
+document.addEventListener('DOMContentLoaded', () => {
+  const dropdown = document.getElementById('external-sites-dropdown');
+  const triggerBtn = document.getElementById('dropdown-trigger-btn');
+
+  if (dropdown && triggerBtn) {
+    // Toggle on click
+    triggerBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = dropdown.classList.toggle('is-open');
+      triggerBtn.setAttribute('aria-expanded', isOpen.toString());
+    });
+
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!dropdown.contains(e.target)) {
+        dropdown.classList.remove('is-open');
+        triggerBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Close on Escape key press
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && dropdown.classList.contains('is-open')) {
+        dropdown.classList.remove('is-open');
+        triggerBtn.setAttribute('aria-expanded', 'false');
+        triggerBtn.focus();
+      }
+    });
+  }
+});
