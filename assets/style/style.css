@@ -113,6 +113,19 @@ a {
   opacity: 0.74;
 }
 
+.contact{
+   text-decoration: none;
+  color: var(--text-main);
+  font-size: 0.92rem;
+  letter-spacing: 0.02em;
+  transition: color 0.25s ease, opacity 0.25s ease, transform 0.25s ease;
+}
+
+.contact:hover,
+.contact:focus-visible {
+  color: var(--gold-accent);
+}
+
 .btn-primary-sm,
 .btn-lore,
 .btn-submit,
