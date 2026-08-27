@@ -91,6 +91,24 @@
       "featured": false,
       "relatedLoreIds": [],
       "status": "active"
+    },
+
+    {
+      "id": "stringstar",
+      "title": "String Star",
+      "week": "Coming Soon",
+      "genre": "Coming Sept 25th 2026",
+      "cover": "assets/images/stringstar.webp",
+      "coverAlt": "Track 06 cover art",
+      "lyrics": "",
+      "previewAudio": "assets/audio/previews/006_stringstar.mp3",
+      "youtubeId": "example_id_6",
+      "spotifyUrl": "",
+      "appleMusicUrl": "",
+      "releaseDate": "2026-09-25",
+      "featured": false,
+      "relatedLoreIds": [],
+      "status": "active"
     }
   ]
 }
