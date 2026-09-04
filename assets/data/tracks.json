@@ -112,6 +112,24 @@
       "featured": false,
       "relatedLoreIds": [],
       "status": "active"
+    },
+
+     {
+      "id": "Jianitanamerah",
+      "title": "Jianitinamerah",
+      "week": "Coming Soon",
+      "genre": "Coming Oct 2nd 2026",
+      "cover": "assets/images/jianitanamerah.webp",
+      "coverAlt": "Track 07 cover art",
+      "lyrics": "",
+      "previewAudio": "assets/audio/previews/007_jianitanamerah.mp3",
+      "youtubeId": "",
+      "spotifyUrl": "",
+      "appleMusicUrl": "",
+      "releaseDate": "2026-10-02",
+      "featured": false,
+      "relatedLoreIds": [],
+      "status": "active"
     }
   ]
 }
