@@ -3,7 +3,7 @@
     {
       "id": "yo-voy",
       "title": "Yo Voy",
-      "week": "Coming Soon",
+      "week": "2026",
       "genre": "Pop Fusion Reggaeton",
       "cover": "assets/images/yovoy.webp",
       "coverAlt": "Yo Voy cover art",
@@ -24,8 +24,8 @@
     {
       "id": "rebobo",
       "title": "Rebobo",
-      "week": "Coming Soon",
-      "genre": "Coming Aug 28th 2026",
+      "week": "2026",
+      "genre": "Reggaeton loco",
       "cover": "assets/images/rebobo.webp",
       "coverAlt": "Rebobo cover art",
       "lyrics": "assets/lyrics/rebobo.txt",
@@ -44,8 +44,8 @@
     {
       "id": "shadow-team",
       "title": "Shadow Team",
-      "week": "Coming Soon",
-      "genre": "Coming Sept 4th 2026",
+      "week": "2026",
+      "genre": "Vegas Hop",
       "cover": "assets/images/shadowteam.webp",
       "coverAlt": "Track 03 cover art",
       "lyrics": "assets/lyrics/shadow_team.txt",
