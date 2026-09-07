@@ -130,6 +130,24 @@
       "featured": false,
       "relatedLoreIds": [],
       "status": "active"
+    },
+
+     {
+      "id": "Never Crawl",
+      "title": "Never Crawl",
+      "week": "Coming Soon",
+      "genre": "Coming Oct 9th 2026",
+      "cover": "assets/images/nevercrawl.webp",
+      "coverAlt": "Track 08 cover art",
+      "lyrics": "",
+      "previewAudio": "assets/audio/previews/008_nevercrawl.mp3",
+      "youtubeId": "",
+      "spotifyUrl": "",
+      "appleMusicUrl": "",
+      "releaseDate": "2026-10-09",
+      "featured": false,
+      "relatedLoreIds": [],
+      "status": "active"
     }
   ]
 }
