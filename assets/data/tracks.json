@@ -1,7 +1,7 @@
 {
   "tracks": [
     {
-      "id": "yo-voy",
+      "id": "ib_0001",
       "title": "Yo Voy",
       "week": "2026",
       "genre": "Reggaeton",
@@ -22,7 +22,7 @@
     },
 
     {
-      "id": "rebobo",
+      "id": "ib_0002",
       "title": "Rebobo",
       "week": "2026",
       "genre": "Reggaeton",
@@ -42,7 +42,7 @@
     },
 
     {
-      "id": "shadow-team",
+      "id": "ib_0003",
       "title": "Shadow Team",
       "week": "2026",
       "genre": "Hip Hop",
@@ -60,7 +60,7 @@
       "status": "active"
     },
 {
-      "id": "webstar",
+      "id": "ib_0004",
       "title": "WebStar",
       "week": "Coming Soon",
       "genre": "Hip Hop",
@@ -80,14 +80,14 @@
 
 
     {
-      "id": "left_all_her_doubts",
+      "id": "ib_0005",
       "title": "Left All Her Doubts",
       "week": "Coming Soon",
-      "genre": "Coming Sept 18th 2026",
+      "genre": "Hip Hop,Linuistic fusion",
       "cover": "assets/images/leftallherdoubts.webp",
       "coverAlt": "Track 05 cover art",
       "lyrics": "assets/lyrics/005_left_her_doubts.txt",
-      "previewAudio": "assets/audio/previews/005_leftallherdoubts.mp3",
+      "previewAudio": "",
       "youtubeId": "-z_hG_dQaiY",
       "spotifyUrl": "https://open.spotify.com/track/4SPyXUUXxuTEtljifVJN1c",
       "appleMusicUrl": "https://music.apple.com/us/album/left-all-her-doubts-behind-single/6804334244",
@@ -99,25 +99,26 @@
     },
 
     {
-      "id": "stringstar",
+      "id": "ib_0006",
       "title": "String Star",
       "week": "Coming Soon",
-      "genre": "Coming Sept 25th 2026",
+      "genre": "Hip Hop, Fusion, Nerdy",
       "cover": "assets/images/stringstar.webp",
       "coverAlt": "Track 06 cover art",
-      "lyrics": "",
+      "lyrics": "assets/lyrics/006_stringstar.txt",
       "previewAudio": "assets/audio/previews/006_stringstar.mp3",
-      "youtubeId": "example_id_6",
-      "spotifyUrl": "",
-      "appleMusicUrl": "",
+      "youtubeId": "GTj_KYJc6BY",
+      "spotifyUrl": "https://open.spotify.com/track/3qkYNGk1SSJHiH7Ncxmykp",
+      "appleMusicUrl": "https://music.apple.com/us/song/string-star/6814025303",
+      "hyperfollowUrl": "https://distrokid.com/hyperfollow/ivoleusbalam/string-star-2?ref=release",
       "releaseDate": "2026-09-25",
-      "featured": false,
+      "featured": true,
       "relatedLoreIds": [],
       "status": "active"
     },
 
      {
-      "id": "Jianitanamerah",
+      "id": "ib_0007",
       "title": "Jianitinamerah",
       "week": "Coming Soon",
       "genre": "Coming Oct 2nd 2026",
@@ -135,7 +136,7 @@
     },
 
      {
-      "id": "Never Crawl",
+      "id": "ib_0008",
       "title": "Never Crawl",
       "week": "Coming Soon",
       "genre": "Coming Oct 9th 2026",
@@ -153,7 +154,7 @@
     },
 
     {
-      "id": "Fake_Sugar",
+      "id": "ib_0009",
       "title": "Fake Sugar",
       "week": "Coming Soon",
       "genre": "Coming Oct 16th 2026",
@@ -169,7 +170,27 @@
       "featured": false,
       "relatedLoreIds": [],
       "status": "active"
-    }
+    },
+
+   {
+      "id": "ib_0010",
+      "title": "Bodonkadonk Wiggle",
+      "week": "Coming Soon",
+      "genre": "Coming Oct 23rd 2026",
+      "cover": "assets/images/bodonkadonk_wiggle.webp",
+      "coverAlt": "Track 06 cover art",
+      "lyrics": "",
+      "previewAudio": "assets/audio/previews/010_bodonkadonk_wiggle.mp3",
+      "youtubeId": "",
+      "spotifyUrl": "",
+      "appleMusicUrl": "",
+      "hyperfollowUrl": "",
+      "releaseDate": "2026-10-23",
+      "featured": false,
+      "relatedLoreIds": [],
+      "status": "active"
+    } 
+
 
   ]
 }
