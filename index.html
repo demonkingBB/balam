@@ -130,6 +130,7 @@ src="https://www.facebook.com/tr?id=1339249984859421&ev=PageView&noscript=1"
       <div class="hero-content">
         <div class="artwork-wrapper">
           <img id="hero-cover" src="assets/images/ivoleus.png" alt="Music-cover" class="hero-cover">
+          <div id="hero-content-gate" class="content-gate hero-content-gate" hidden></div>
           <span id="hero-badge" class="badge">Week 01 Single</span>
         </div>
         <div class="player-details">
@@ -147,7 +148,7 @@ src="https://www.facebook.com/tr?id=1339249984859421&ev=PageView&noscript=1"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowfullscreen></iframe>
               </div>
-              <p class="hero-video-note"></p>So Tenacious !!!!.</p>
+              <p class="hero-video-note">So Tenacious !!!!.</p>
             </div>
 
             <div id="hero-video-placeholder" class="hero-video-placeholder" hidden>
@@ -185,7 +186,7 @@ src="https://www.facebook.com/tr?id=1339249984859421&ev=PageView&noscript=1"
       <div class="vault-tools" aria-label="Vault search and filters">
         <label class="vault-search">
           <span class="sr-only">Search the vault</span>
-          <input id="vault-search-input" type="search" placeholder="Search songs, genres, or week..." autocomplete="off">
+          <input id="vault-search-input" type="search" placeholder="Search songs, artists, genres, or tags..." autocomplete="off">
         </label>
 
         <div class="vault-filters" role="tablist" aria-label="Vault filters">
@@ -196,6 +197,20 @@ src="https://www.facebook.com/tr?id=1339249984859421&ev=PageView&noscript=1"
         </div>
 
         <div class="vault-selects" aria-label="Vault categories">
+          <label class="vault-select">
+            <span class="sr-only">Filter by artist</span>
+            <select id="vault-artist-filter">
+              <option value="ivoleus-balam">Ivoleus Balam</option>
+            </select>
+          </label>
+
+          <label class="vault-select">
+            <span class="sr-only">Filter by primary category</span>
+            <select id="vault-category-filter">
+              <option value="all">All Categories</option>
+            </select>
+          </label>
+
           <label class="vault-select">
             <span class="sr-only">Filter by year</span>
             <select id="vault-year-filter">
@@ -217,6 +232,8 @@ src="https://www.facebook.com/tr?id=1339249984859421&ev=PageView&noscript=1"
 
         <p id="vault-results-count" class="vault-results-count" aria-live="polite">Loading releases...</p>
       </div>
+
+      <div id="vault-artist-context" class="vault-artist-context" aria-live="polite"></div>
 
       <div id="vault-grid" class="grid-container" aria-live="polite">
         <p class="vault-loading">Loading releases...</p>

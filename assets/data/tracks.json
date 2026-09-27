@@ -2,9 +2,13 @@
   "tracks": [
     {
       "id": "ib_0001",
+      "artistId": "ivoleus-balam",
       "title": "Yo Voy",
       "week": "2026",
       "genre": "Fusion",
+      "primaryCategory": "latin",
+      "genres": ["fusion", "reggaeton"],
+      "tags": ["mixed-language"],
       "cover": "assets/images/001_yovoy.webp",
       "coverAlt": "Yo Voy cover art",
       "lyrics": "assets/lyrics/001_yovoy.txt",
@@ -23,9 +27,13 @@
 
     {
       "id": "ib_0002",
+      "artistId": "ivoleus-balam",
       "title": "Rebobo",
       "week": "2026",
       "genre": "Reggaeton",
+      "primaryCategory": "latin",
+      "genres": ["reggaeton"],
+      "tags": [],
       "cover": "assets/images/002_rebobo.webp",
       "coverAlt": "Rebobo cover art",
       "lyrics": "assets/lyrics/002_rebobo.txt",
@@ -43,9 +51,13 @@
 
     {
       "id": "ib_0003",
+      "artistId": "ivoleus-balam",
       "title": "Shadow Team",
       "week": "2026",
       "genre": "Hip Hop",
+      "primaryCategory": "urban",
+      "genres": ["hip-hop"],
+      "tags": [],
       "cover": "assets/images/003_shadowteam.webp",
       "coverAlt": "Track 03 cover art",
       "lyrics": "assets/lyrics/003_shadow_team.txt",
@@ -61,9 +73,13 @@
     },
 {
       "id": "ib_0004",
+      "artistId": "ivoleus-balam",
       "title": "WebStar",
       "week": "2026",
       "genre": "Nerd Hop",
+      "primaryCategory": "nerdcore",
+      "genres": ["nerd-hop"],
+      "tags": [],
       "cover": "assets/images/004_webstar.webp",
       "coverAlt": "Track 04 cover art",
       "lyrics": "assets/lyrics/004_webstar.txt",
@@ -81,9 +97,13 @@
 
     {
       "id": "ib_0005",
+      "artistId": "ivoleus-balam",
       "title": "Left All Her Doubts",
       "week": "2026",
       "genre": "Hip Hop",
+      "primaryCategory": "urban",
+      "genres": ["hip-hop"],
+      "tags": [],
       "cover": "assets/images/005_leftallherdoubts.webp",
       "coverAlt": "Track 05 cover art",
       "lyrics": "assets/lyrics/005_left_her_doubts.txt",
@@ -100,9 +120,13 @@
 
     {
       "id": "ib_0006",
+      "artistId": "ivoleus-balam",
       "title": "String Star",
       "week": "2026",
       "genre": "Nerd Hop",
+      "primaryCategory": "nerdcore",
+      "genres": ["nerd-hop"],
+      "tags": [],
       "cover": "assets/images/006_stringstar.webp",
       "coverAlt": "Track 06 cover art",
       "lyrics": "assets/lyrics/006_stringstar.txt",
@@ -119,9 +143,13 @@
 
      {
       "id": "ib_0007",
+      "artistId": "ivoleus-balam",
       "title": "Jianitinamerah",
       "week": "Coming Oct 2nd 2026",
       "genre": "Fusion",
+      "primaryCategory": "culture",
+      "genres": ["fusion"],
+      "tags": [],
       "cover": "assets/images/007_jianitanamerah.webp",
       "coverAlt": "Track 07 cover art",
       "lyrics": "",
@@ -137,9 +165,13 @@
 
      {
       "id": "ib_0008",
+      "artistId": "ivoleus-balam",
       "title": "Never Crawl",
       "week": "Coming Oct 9th 2026",
       "genre": "Alternative",
+      "primaryCategory": "acoustic",
+      "genres": ["alternative"],
+      "tags": [],
       "cover": "assets/images/008_nevercrawl.webp",
       "coverAlt": "Track 08 cover art",
       "lyrics": "",
@@ -155,9 +187,13 @@
 
     {
       "id": "ib_0009",
+      "artistId": "ivoleus-balam",
       "title": "Fake Sugar",
       "week": "Coming Oct 16th 2026",
       "genre": "R&B",
+      "primaryCategory": "urban",
+      "genres": ["r&b"],
+      "tags": [],
       "cover": "assets/images/009_fake_sugar.webp",
       "coverAlt": "Track 09 cover art",
       "lyrics": "",
@@ -174,9 +210,13 @@
 
    {
       "id": "ib_0010",
+      "artistId": "ivoleus-balam",
       "title": "Bodonkadonk Wiggle",
       "week": "Coming Oct 23rd 2026",
       "genre": "Country",
+      "primaryCategory": "roots",
+      "genres": ["country"],
+      "tags": [],
       "cover": "assets/images/010_bodonkadonk_wiggle.webp",
       "coverAlt": "Track 06 cover art",
       "lyrics": "",
@@ -193,9 +233,13 @@
 
     {
       "id": "ib_0011",
+      "artistId": "ivoleus-balam",
       "title": "50 Ways",
       "week": "Coming Oct 30th 2026",
       "genre": "R&B",
+      "primaryCategory": "urban",
+      "genres": ["r&b"],
+      "tags": ["mature-themes"],
       "cover": "assets/images/011_50_ways.webp",
       "coverAlt": "Track 06 cover art",
       "lyrics": "",
@@ -206,15 +250,24 @@
       "hyperfollowUrl": "",
       "releaseDate": "2026-10-30",
       "featured": false,
+      "contentNotice": {
+        "label": "Mature Themes",
+        "requiresReveal": true,
+        "message": "This song contains suggestive themes and sexual innuendo."
+      },
       "relatedLoreIds": [],
       "status": "active"
     } ,
 
     {
       "id": "ib_0012",
+      "artistId": "ivoleus-balam",
       "title": "Oozy Woozy",
       "week": "Coming Nov 6th 2026",
       "genre": "Hip Hop",
+      "primaryCategory": "urban",
+      "genres": ["hip-hop"],
+      "tags": ["mature-themes"],
       "cover": "assets/images/012_oozy_woozy.webp",
       "coverAlt": "Track 06 cover art",
       "lyrics": "",
@@ -225,6 +278,11 @@
       "hyperfollowUrl": "",
       "releaseDate": "2026-11-06",
       "featured": false,
+      "contentNotice": {
+        "label": "Mature Themes",
+        "requiresReveal": true,
+        "message": "This song contains suggestive themes and sexual innuendo."
+      },
       "relatedLoreIds": [],
       "status": "active"
     } 

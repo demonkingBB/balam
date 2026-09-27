@@ -1,4 +1,23 @@
 const TRACK_MANIFEST_PATH = 'assets/data/tracks.json';
+const ARTIST_MANIFEST_PATH = 'assets/data/artists.json';
+const DEFAULT_ARTIST_ID = 'ivoleus-balam';
+const PRIMARY_CATEGORIES = [
+  { id: 'urban', label: 'Urban' },
+  { id: 'latin', label: 'Latin' },
+  { id: 'roots', label: 'Roots' },
+  { id: 'acoustic', label: 'Acoustic' },
+  { id: 'nerdcore', label: 'Nerdcore' },
+  { id: 'pop', label: 'Pop' },
+  { id: 'culture', label: 'Culture' }
+];
+const DEFAULT_ARTIST = {
+  id: DEFAULT_ARTIST_ID,
+  name: 'Ivoleus Balam',
+  cover: 'assets/images/ivoleus.png',
+  coverAlt: 'Ivoleus Balam artist artwork',
+  description: 'Pop fusion, Latin, urban, nerdcore, and culturally inspired releases.',
+  isPrimary: true
+};
 const DEFAULT_HERO_TITLE = 'Out of My Body';
 const DEFAULT_HERO_META = 'Pop fusion - Released this Friday';
 const DEFAULT_HERO_COVER = 'assets/images/out_of_body_spiritual.webp';
@@ -9,6 +28,10 @@ let vaultFilter = 'all';
 let vaultSearchQuery = '';
 let vaultYearFilter = 'all';
 let vaultGenreFilter = 'all';
+let vaultArtists = [DEFAULT_ARTIST];
+let vaultArtistFilter = DEFAULT_ARTIST_ID;
+let vaultCategoryFilter = 'all';
+const revealedTrackIds = new Set();
 
 initSite();
 
@@ -34,19 +57,41 @@ async function loadTrackManifest() {
   if (!grid) return;
 
   try {
-    const response = await fetch(TRACK_MANIFEST_PATH);
-    if (!response.ok) {
-      throw new Error(`Manifest could not be loaded: ${response.status}`);
+    const [trackResponse, artistResponse] = await Promise.all([
+      fetch(TRACK_MANIFEST_PATH),
+      fetch(ARTIST_MANIFEST_PATH).catch((error) => {
+        console.warn('Artist manifest could not be requested:', error);
+        return null;
+      })
+    ]);
+
+    if (!trackResponse.ok) {
+      throw new Error(`Track manifest could not be loaded: ${trackResponse.status}`);
     }
 
-    const data = await response.json();
+    const data = await trackResponse.json();
     const tracks = Array.isArray(data) ? data : data.tracks;
 
     if (!Array.isArray(tracks) || tracks.length === 0) {
       throw new Error('Track manifest is empty');
     }
 
+    if (artistResponse?.ok) {
+      try {
+        const artistData = await artistResponse.json();
+        const artists = Array.isArray(artistData) ? artistData : artistData.artists;
+        vaultArtists = Array.isArray(artists) && artists.length ? artists : [DEFAULT_ARTIST];
+      } catch (error) {
+        vaultArtists = [DEFAULT_ARTIST];
+        console.warn('Artist manifest could not be parsed:', error);
+      }
+    } else {
+      vaultArtists = [DEFAULT_ARTIST];
+      console.warn(`Artist manifest could not be loaded: ${artistResponse?.status || 'unavailable'}`);
+    }
+
     vaultTracks = tracks;
+    normalizeVaultSelections();
     populateVaultFilterOptions();
     renderVaultGrid();
   } catch (error) {
@@ -60,6 +105,8 @@ async function loadTrackManifest() {
 
 function setupVaultControls() {
   const searchInput = document.getElementById('vault-search-input');
+  const artistSelect = document.getElementById('vault-artist-filter');
+  const categorySelect = document.getElementById('vault-category-filter');
   const yearSelect = document.getElementById('vault-year-filter');
   const genreSelect = document.getElementById('vault-genre-filter');
   const resetButton = document.getElementById('vault-reset-filters');
@@ -68,6 +115,25 @@ function setupVaultControls() {
   if (searchInput) {
     searchInput.addEventListener('input', (event) => {
       vaultSearchQuery = String(event.target.value || '').trim().toLowerCase();
+      renderVaultGrid();
+    });
+  }
+
+  if (artistSelect) {
+    artistSelect.addEventListener('change', (event) => {
+      vaultArtistFilter = String(event.target.value || DEFAULT_ARTIST_ID);
+      vaultCategoryFilter = 'all';
+      vaultGenreFilter = 'all';
+      populateVaultFilterOptions();
+      renderVaultGrid();
+    });
+  }
+
+  if (categorySelect) {
+    categorySelect.addEventListener('change', (event) => {
+      vaultCategoryFilter = String(event.target.value || 'all');
+      vaultGenreFilter = 'all';
+      populateVaultFilterOptions();
       renderVaultGrid();
     });
   }
@@ -90,6 +156,8 @@ function setupVaultControls() {
     resetButton.addEventListener('click', () => {
       vaultFilter = 'all';
       vaultSearchQuery = '';
+      vaultArtistFilter = getPrimaryArtist().id;
+      vaultCategoryFilter = 'all';
       vaultYearFilter = 'all';
       vaultGenreFilter = 'all';
 
@@ -97,13 +165,12 @@ function setupVaultControls() {
         searchInput.value = '';
       }
 
-      if (yearSelect) {
-        yearSelect.value = 'all';
-      }
+      populateVaultFilterOptions();
 
-      if (genreSelect) {
-        genreSelect.value = 'all';
-      }
+      if (artistSelect) artistSelect.value = vaultArtistFilter;
+      if (categorySelect) categorySelect.value = vaultCategoryFilter;
+      if (yearSelect) yearSelect.value = vaultYearFilter;
+      if (genreSelect) genreSelect.value = vaultGenreFilter;
 
       filterButtons.forEach((button) => {
         const isActive = button.dataset.filter === 'all';
@@ -129,12 +196,50 @@ function setupVaultControls() {
 }
 
 function populateVaultFilterOptions() {
+  const artistSelect = document.getElementById('vault-artist-filter');
+  const categorySelect = document.getElementById('vault-category-filter');
   const yearSelect = document.getElementById('vault-year-filter');
   const genreSelect = document.getElementById('vault-genre-filter');
 
+  const primaryArtist = getPrimaryArtist();
+  const orderedArtists = [
+    primaryArtist,
+    ...vaultArtists.filter((artist) => artist.id !== primaryArtist.id)
+  ];
+
+  if (artistSelect) {
+    const artistIds = orderedArtists.map((artist) => String(artist.id || '').trim()).filter(Boolean);
+    if (!artistIds.includes(vaultArtistFilter) && vaultArtistFilter !== 'all') {
+      vaultArtistFilter = primaryArtist.id;
+    }
+
+    const artistOptions = orderedArtists.map((artist) => `
+      <option value="${escapeAttribute(artist.id)}">${escapeHtml(artist.name || artist.id)}</option>
+    `);
+
+    if (orderedArtists.length > 1) {
+      artistOptions.push('<option value="all">All Artists</option>');
+    }
+
+    artistSelect.innerHTML = artistOptions.join('');
+    artistSelect.value = vaultArtistFilter;
+  }
+
+  if (categorySelect) {
+    categorySelect.innerHTML = ['<option value="all">All Categories</option>']
+      .concat(PRIMARY_CATEGORIES.map((category) => `
+        <option value="${escapeAttribute(category.id)}">${escapeHtml(category.label)}</option>
+      `))
+      .join('');
+    categorySelect.value = PRIMARY_CATEGORIES.some((category) => category.id === vaultCategoryFilter)
+      ? vaultCategoryFilter
+      : 'all';
+    vaultCategoryFilter = categorySelect.value;
+  }
+
   if (yearSelect) {
-    const selectedYear = yearSelect.value || vaultYearFilter;
-    const years = [...new Set(vaultTracks
+    const selectedYear = vaultYearFilter;
+    const years = [...new Set(getArtistScopedTracks()
       .map((track) => getTrackYear(track))
       .filter(Boolean))]
       .sort((left, right) => Number(right) - Number(left));
@@ -148,18 +253,29 @@ function populateVaultFilterOptions() {
   }
 
   if (genreSelect) {
-    const selectedGenre = genreSelect.value || vaultGenreFilter;
-    const genres = [...new Set(vaultTracks
-      .map((track) => getTrackGenre(track))
-      .filter(Boolean))]
+    const selectedGenre = vaultGenreFilter;
+    const genres = [...new Set(getArtistScopedTracks()
+      .filter((track) => vaultCategoryFilter === 'all' || getTrackCategory(track) === vaultCategoryFilter)
+      .flatMap((track) => getTrackGenres(track)))]
       .sort((left, right) => left.localeCompare(right));
 
     genreSelect.innerHTML = ['<option value="all">All Genres</option>']
       .concat(genres.map((genre) => `<option value="${escapeAttribute(genre)}">${escapeHtml(genre)}</option>`))
       .join('');
 
-    vaultGenreFilter = genres.includes(selectedGenre) ? selectedGenre : 'all';
+    vaultGenreFilter = genres.some((genre) => normalizeVaultValue(genre) === normalizeVaultValue(selectedGenre))
+      ? selectedGenre
+      : 'all';
     genreSelect.value = vaultGenreFilter;
+  }
+}
+
+function normalizeVaultSelections() {
+  const primaryArtist = getPrimaryArtist();
+  const artistIds = vaultArtists.map((artist) => String(artist.id || '').trim()).filter(Boolean);
+
+  if (!artistIds.includes(vaultArtistFilter) && vaultArtistFilter !== 'all') {
+    vaultArtistFilter = primaryArtist.id;
   }
 }
 
@@ -170,9 +286,11 @@ function renderVaultGrid() {
 
   const activeTracks = sortTracksByReleaseDate(vaultTracks.filter((track) => track.status !== 'locked'));
   const lockedTracks = vaultTracks.filter((track) => track.status === 'locked');
-  const heroTrack = getFeaturedTrack(activeTracks);
+  const primaryArtistTracks = activeTracks.filter((track) => getTrackArtistId(track) === getPrimaryArtist().id);
+  const heroTrack = getFeaturedTrack(primaryArtistTracks.length ? primaryArtistTracks : activeTracks);
 
   populateHeroTrack(heroTrack);
+  renderSelectedArtist();
 
   const visibleActiveTracks = activeTracks.filter((track) => matchesVaultFilters(track));
   const visibleLockedTracks = lockedTracks.filter((track) => matchesVaultFilters(track));
@@ -196,19 +314,40 @@ function renderVaultGrid() {
   }
 }
 
-function matchesVaultFilters(track) {
-  const searchableText = [
-    track.title,
-    track.genre,
-    track.week,
-    track.releaseDate,
-    track.lockedLabel
-  ]
-    .filter(Boolean)
-    .join(' ')
-    .toLowerCase();
+function renderSelectedArtist() {
+  const context = document.getElementById('vault-artist-context');
+  if (!context) return;
 
-  if (vaultSearchQuery && !searchableText.includes(vaultSearchQuery)) {
+  const artist = vaultArtistFilter === 'all' ? getPrimaryArtist() : getArtistById(vaultArtistFilter);
+  const heading = vaultArtistFilter === 'all' ? 'All Artists' : (artist.name || 'Artist');
+  const description = vaultArtistFilter === 'all'
+    ? 'Browse releases from every artist in the vault.'
+    : (artist.description || `Browse releases by ${artist.name || 'this artist'}.`);
+
+  context.innerHTML = `
+    <img src="${escapeAttribute(artist.cover || DEFAULT_ARTIST.cover)}" alt="${escapeAttribute(artist.coverAlt || `${heading} artwork`)}" loading="lazy">
+    <div class="vault-artist-context-copy">
+      <p class="vault-artist-kicker">Artist Collection</p>
+      <h3>${escapeHtml(heading)}</h3>
+      <p>${escapeHtml(description)}</p>
+    </div>
+  `;
+}
+
+function matchesVaultFilters(track) {
+  const searchableText = normalizeVaultSearchText([
+    track.title,
+    getTrackArtistName(track),
+    getTrackCategoryLabel(track),
+    getTrackGenres(track).join(' '),
+    getTrackTags(track).join(' '),
+    track.week,
+    getTrackYear(track),
+    track.lockedLabel
+  ].filter(Boolean).join(' '));
+  const searchQuery = normalizeVaultSearchText(vaultSearchQuery);
+
+  if (searchQuery && !searchableText.includes(searchQuery)) {
     return false;
   }
 
@@ -224,11 +363,21 @@ function matchesVaultFilters(track) {
     return track.status !== 'locked';
   }
 
+  if (vaultArtistFilter !== 'all' && getTrackArtistId(track) !== vaultArtistFilter) {
+    return false;
+  }
+
+  if (vaultCategoryFilter !== 'all' && getTrackCategory(track) !== vaultCategoryFilter) {
+    return false;
+  }
+
   if (vaultYearFilter !== 'all' && getTrackYear(track) !== vaultYearFilter) {
     return false;
   }
 
-  if (vaultGenreFilter !== 'all' && normalizeVaultValue(getTrackGenre(track)) !== normalizeVaultValue(vaultGenreFilter)) {
+  if (vaultGenreFilter !== 'all' && !getTrackGenres(track).some((genre) => (
+    normalizeVaultValue(genre) === normalizeVaultValue(vaultGenreFilter)
+  ))) {
     return false;
   }
 
@@ -242,15 +391,67 @@ function getTrackYear(track) {
   return String(new Date(releaseTime).getFullYear());
 }
 
-function getTrackGenre(track) {
-  const genre = String(track?.genre || '').trim();
-  if (!genre) return '';
+function getPrimaryArtist() {
+  return vaultArtists.find((artist) => artist.isPrimary) || vaultArtists[0] || DEFAULT_ARTIST;
+}
 
-  return genre;
+function getArtistById(artistId) {
+  return vaultArtists.find((artist) => artist.id === artistId) || getPrimaryArtist();
+}
+
+function getTrackArtistId(track) {
+  return String(track?.artistId || DEFAULT_ARTIST_ID).trim() || DEFAULT_ARTIST_ID;
+}
+
+function getTrackArtistName(track) {
+  return getArtistById(getTrackArtistId(track)).name || 'Unknown Artist';
+}
+
+function getTrackCategory(track) {
+  return normalizeVaultValue(track?.primaryCategory || track?.category);
+}
+
+function getTrackCategoryLabel(track) {
+  const categoryId = getTrackCategory(track);
+  const category = PRIMARY_CATEGORIES.find((item) => item.id === categoryId);
+  return category?.label || String(track?.primaryCategory || track?.category || '').trim();
+}
+
+function getTrackGenres(track) {
+  const rawGenres = Array.isArray(track?.genres) ? track.genres : [track?.genre];
+  return [...new Set(rawGenres
+    .map((genre) => String(genre || '').trim())
+    .filter(Boolean))];
+}
+
+function getTrackGenre(track) {
+  const configuredGenre = String(track?.genre || '').trim();
+  return configuredGenre || getTrackGenres(track).join(' / ');
+}
+
+function getTrackTags(track) {
+  const rawTags = Array.isArray(track?.tags) ? track.tags : [track?.tags];
+  return [...new Set(rawTags
+    .map((tag) => String(tag || '').trim())
+    .filter(Boolean))];
+}
+
+function getArtistScopedTracks() {
+  return vaultTracks.filter((track) => (
+    vaultArtistFilter === 'all' || getTrackArtistId(track) === vaultArtistFilter
+  ));
 }
 
 function normalizeVaultValue(value) {
   return String(value || '').trim().toLowerCase();
+}
+
+function normalizeVaultSearchText(value) {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/[-_/]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function sortTracksByReleaseDate(tracks) {
@@ -313,6 +514,7 @@ function isPinActive(track) {
 function populateHeroTrack(track) {
   const heroEyebrow = document.getElementById('hero-eyebrow');
   const heroCover = document.getElementById('hero-cover');
+  const heroContentGate = document.getElementById('hero-content-gate');
   const heroBadge = document.getElementById('hero-badge');
   const heroTitle = document.getElementById('hero-title');
   const heroMeta = document.getElementById('hero-meta');
@@ -322,6 +524,12 @@ function populateHeroTrack(track) {
     if (heroCover) {
       heroCover.src = DEFAULT_HERO_COVER;
       heroCover.alt = DEFAULT_HERO_COVER_ALT;
+      heroCover.hidden = false;
+    }
+
+    if (heroContentGate) {
+      heroContentGate.hidden = true;
+      heroContentGate.innerHTML = '';
     }
 
     if (heroBadge) {
@@ -352,14 +560,25 @@ function populateHeroTrack(track) {
   const trackTitle = track.title || DEFAULT_HERO_TITLE;
   const releaseLabel = formatReleaseDate(track.releaseDate);
   const heroMode = getHeroPlaybackMode(track);
+  const contentNotice = getTrackContentNotice(track);
+  const contentIsGated = Boolean(contentNotice && !isTrackContentRevealed(track));
   const isUpcoming = heroMode === 'preview';
-  const trackMeta = track.genre
-    ? `${track.genre}${releaseLabel ? ` - ${isUpcoming ? 'Coming' : 'Released'} ${releaseLabel}` : ''}`
+  const trackGenre = getTrackGenre(track);
+  const trackMeta = trackGenre
+    ? `${trackGenre}${releaseLabel ? ` - ${isUpcoming ? 'Coming' : 'Released'} ${releaseLabel}` : ''}`
     : DEFAULT_HERO_META;
 
   if (heroCover) {
     heroCover.src = track.cover || DEFAULT_HERO_COVER;
     heroCover.alt = track.coverAlt || `${trackTitle} cover art`;
+    heroCover.hidden = contentIsGated;
+  }
+
+  if (heroContentGate) {
+    heroContentGate.hidden = !contentIsGated;
+    heroContentGate.innerHTML = contentIsGated
+      ? renderContentGate(track, contentNotice)
+      : '';
   }
 
   if (heroBadge) {
@@ -375,14 +594,16 @@ function populateHeroTrack(track) {
   }
 
   if (heroEyebrow) {
-    heroEyebrow.textContent = isUpcoming ? 'Coming Soon Preview' : 'Official Release';
+    heroEyebrow.textContent = contentIsGated
+      ? 'Mature Themes'
+      : (isUpcoming ? 'Coming Soon Preview' : 'Official Release');
   }
 
   if (heroStreamingLinks) {
-    heroStreamingLinks.innerHTML = renderHeroStreamingLinks(track);
+    heroStreamingLinks.innerHTML = contentIsGated ? '' : renderHeroStreamingLinks(track);
   }
 
-  configureHeroPlayer(track, heroMode);
+  configureHeroPlayer(track, heroMode, contentIsGated);
 }
 
 function formatReleaseDate(releaseDate) {
@@ -432,6 +653,57 @@ function getTrackBadgeLabel(track, index) {
   return configuredLabel || `WK ${String(index + 1).padStart(2, '0')}`;
 }
 
+function getTrackContentNotice(track) {
+  const notice = track?.contentNotice;
+  if (!notice || notice.requiresReveal !== true) return null;
+
+  return {
+    label: String(notice.label || 'Mature Themes').trim(),
+    message: String(notice.message || 'This song contains suggestive themes and sexual innuendo.').trim()
+  };
+}
+
+function isTrackContentRevealed(track) {
+  const notice = getTrackContentNotice(track);
+  if (!notice || !track?.id) return true;
+  if (revealedTrackIds.has(track.id)) return true;
+
+  try {
+    return sessionStorage.getItem(`ivoleus-revealed-track:${track.id}`) === 'true';
+  } catch (error) {
+    return false;
+  }
+}
+
+function revealTrackContent(trackId) {
+  if (!trackId) return;
+  revealedTrackIds.add(trackId);
+
+  try {
+    sessionStorage.setItem(`ivoleus-revealed-track:${trackId}`, 'true');
+  } catch (error) {
+    // The in-memory set still keeps the reveal active for this page visit.
+  }
+}
+
+function renderContentGate(track, notice) {
+  return `
+    <div class="content-gate-copy">
+      <p class="content-gate-kicker">${escapeHtml(notice.label)}</p>
+      <h3>Content Notice</h3>
+      <p>${escapeHtml(notice.message)}</p>
+      <p>Would you like to reveal this release?</p>
+      <button
+        class="btn-reveal-content"
+        type="button"
+        data-reveal-track="${escapeAttribute(track.id)}"
+        aria-label="Reveal ${escapeHtml(track.title || 'song')}">
+        Reveal Song
+      </button>
+    </div>
+  `;
+}
+
 function getHeroPlaybackMode(track) {
   const previewAudioPath = String(track?.previewAudio || '').trim();
   if (!previewAudioPath) return 'video';
@@ -443,7 +715,7 @@ function getHeroPlaybackMode(track) {
   return isTrackUpcoming(track) || !isValidYoutubeId(track?.youtubeId) ? 'preview' : 'video';
 }
 
-function configureHeroPlayer(track, mode) {
+function configureHeroPlayer(track, mode, contentIsGated = false) {
   const videoPlayer = document.getElementById('hero-video-player');
   const videoPlaceholder = document.getElementById('hero-video-placeholder');
   const youtubeEmbed = document.getElementById('hero-youtube-embed');
@@ -453,6 +725,19 @@ function configureHeroPlayer(track, mode) {
   const isPreview = mode === 'preview' && previewAudioPath;
   const embedUrl = mode === 'video' ? buildYoutubeEmbedUrl(track?.youtubeId) : '';
   const hasVideo = Boolean(embedUrl);
+
+  if (contentIsGated) {
+    if (videoPlayer) videoPlayer.hidden = true;
+    if (videoPlaceholder) videoPlaceholder.hidden = true;
+    if (previewPlayer) previewPlayer.hidden = true;
+    if (previewAudio) {
+      previewAudio.pause();
+      previewAudio.removeAttribute('src');
+      previewAudio.load();
+    }
+    if (youtubeEmbed) youtubeEmbed.removeAttribute('src');
+    return;
+  }
 
   if (videoPlayer) {
     videoPlayer.hidden = !hasVideo;
@@ -548,10 +833,15 @@ function renderTrackCard(track, index, featuredTrack) {
         </div>
         <div class="card-info">
           <h3>${escapeHtml(track.title || 'Coming Soon')}</h3>
-          <p class="genre">${escapeHtml(track.genre || 'Track coming soon')}</p>
+          <p class="genre">${escapeHtml(getTrackGenre(track) || 'Track coming soon')}</p>
         </div>
       </article>
     `;
+  }
+
+  const contentNotice = getTrackContentNotice(track);
+  if (contentNotice && !isTrackContentRevealed(track)) {
+    return renderGatedTrackCard(track, index, contentNotice);
   }
 
   const drawerId = `lyrics-${index + 1}`;
@@ -585,7 +875,7 @@ function renderTrackCard(track, index, featuredTrack) {
       </div>
       <div class="card-info">
         <h3>${escapeHtml(trackTitle)}</h3>
-        <p class="genre">${escapeHtml(track.genre || 'Track')}</p>
+        <p class="genre">${escapeHtml(getTrackGenre(track) || 'Track')}</p>
         ${cardPreviewPath ? `
           <div class="track-preview">
             <span class="track-preview-label">Preview</span>
@@ -612,7 +902,33 @@ function renderTrackCard(track, index, featuredTrack) {
   `;
 }
 
+function renderGatedTrackCard(track, index, notice) {
+  const trackAnchorId = track.id ? `track-${sanitizeId(track.id)}` : '';
+
+  return `
+    <article${trackAnchorId ? ` id="${escapeAttribute(trackAnchorId)}" data-track-id="${escapeAttribute(track.id)}"` : ''} class="vault-card content-gated" aria-label="${escapeAttribute(notice.label)} release">
+      <div class="card-img-holder">
+        <div class="content-gate card-content-gate">
+          ${renderContentGate(track, notice)}
+        </div>
+        <span class="week-tag">${escapeHtml(getTrackBadgeLabel(track, index))}</span>
+      </div>
+      <div class="card-info">
+        <h3>${escapeHtml(notice.label)}</h3>
+        <p class="genre">Reveal to view this release.</p>
+      </div>
+    </article>
+  `;
+}
+
 function handleVaultDocumentClick(event) {
+  const revealButton = event.target.closest('[data-reveal-track]');
+  if (revealButton) {
+    revealTrackContent(revealButton.dataset.revealTrack);
+    renderVaultGrid();
+    return;
+  }
+
   const youtubeButton = event.target.closest('[data-card-youtube-id]');
   if (youtubeButton) {
     activateCardYoutubeEmbed(youtubeButton);
