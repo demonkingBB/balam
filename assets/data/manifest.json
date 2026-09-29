@@ -2,6 +2,7 @@
   "name": "Balam Music",
   "short_name": "Balam",
   "start_url": "https://ivoleusbalam.com",
+  "description": "Official app and website for Ivoleus Balam music, releases, and videos.",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
@@ -18,6 +19,7 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
-    }
+    },
+    
   ]
 }
