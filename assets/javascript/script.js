@@ -1,6 +1,7 @@
 const TRACK_MANIFEST_PATH = 'assets/data/tracks.json';
 const ARTIST_MANIFEST_PATH = 'assets/data/artists.json';
 const DEFAULT_ARTIST_ID = 'ivoleus-balam';
+const FEATURED_TRACK_LIMIT = 8;
 const PRIMARY_CATEGORIES = [
   { id: 'urban', label: 'Urban' },
   { id: 'latin', label: 'Latin' },
@@ -24,7 +25,7 @@ const DEFAULT_HERO_COVER = 'assets/images/out_of_body_spiritual.webp';
 const DEFAULT_HERO_COVER_ALT = 'Featured release artwork for Out of My Body';
 
 let vaultTracks = [];
-let vaultFilter = 'all';
+let vaultFilter = 'featured';
 let vaultSearchQuery = '';
 let vaultYearFilter = 'all';
 let vaultGenreFilter = 'all';
@@ -154,7 +155,7 @@ function setupVaultControls() {
 
   if (resetButton) {
     resetButton.addEventListener('click', () => {
-      vaultFilter = 'all';
+      vaultFilter = 'featured';
       vaultSearchQuery = '';
       vaultArtistFilter = getPrimaryArtist().id;
       vaultCategoryFilter = 'all';
@@ -173,7 +174,7 @@ function setupVaultControls() {
       if (genreSelect) genreSelect.value = vaultGenreFilter;
 
       filterButtons.forEach((button) => {
-        const isActive = button.dataset.filter === 'all';
+        const isActive = button.dataset.filter === vaultFilter;
         button.classList.toggle('is-active', isActive);
         button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       });
@@ -294,7 +295,11 @@ function renderVaultGrid() {
 
   const visibleActiveTracks = activeTracks.filter((track) => matchesVaultFilters(track));
   const visibleLockedTracks = lockedTracks.filter((track) => matchesVaultFilters(track));
-  const visibleTracks = [...visibleActiveTracks, ...visibleLockedTracks];
+  let visibleTracks = [...visibleActiveTracks, ...visibleLockedTracks];
+
+  if (vaultFilter === 'featured') {
+    visibleTracks = visibleTracks.slice(0, FEATURED_TRACK_LIMIT);
+  }
 
   if (!visibleTracks.length) {
     grid.innerHTML = '<p class="vault-loading">No releases match your search.</p>';
@@ -351,18 +356,6 @@ function matchesVaultFilters(track) {
     return false;
   }
 
-  if (vaultFilter === 'featured') {
-    return Boolean(track.featured);
-  }
-
-  if (vaultFilter === 'pinned') {
-    return isPinActive(track);
-  }
-
-  if (vaultFilter === 'active') {
-    return track.status !== 'locked';
-  }
-
   if (vaultArtistFilter !== 'all' && getTrackArtistId(track) !== vaultArtistFilter) {
     return false;
   }
@@ -379,6 +372,24 @@ function matchesVaultFilters(track) {
     normalizeVaultValue(genre) === normalizeVaultValue(vaultGenreFilter)
   ))) {
     return false;
+  }
+
+  if (vaultFilter === 'featured') {
+    return track.status !== 'locked' && !isTrackUpcoming(track);
+  }
+
+  if (vaultFilter === 'pinned') {
+    return isPinActive(track);
+  }
+
+  if (vaultFilter === 'active') {
+    return track.status !== 'locked';
+  }
+
+  if (vaultFilter === 'previews') {
+    return track.status !== 'locked' && (
+      isTrackUpcoming(track) || Boolean(String(track.previewAudio || '').trim())
+    );
   }
 
   return true;
