@@ -1,5 +1,6 @@
 const TRACK_MANIFEST_PATH = 'assets/data/tracks.json';
 const ARTIST_MANIFEST_PATH = 'assets/data/artists.json';
+const SNEAK_PEEK_MANIFEST_PATH = 'assets/data/sneak-peeks.json';
 const DEFAULT_ARTIST_ID = 'ivoleus-balam';
 const FEATURED_TRACK_LIMIT = 8;
 const PRIMARY_CATEGORIES = [
@@ -49,6 +50,7 @@ function onSiteReady() {
   document.addEventListener('click', handleVaultDocumentClick);
   setupVaultControls();
   loadTrackManifest();
+  loadSneakPeekManifest();
   setupDropForm();
 }
 
@@ -102,6 +104,156 @@ async function loadTrackManifest() {
     }
     console.error('Error loading track manifest:', error);
   }
+}
+
+async function loadSneakPeekManifest() {
+  const dailyContainer = document.getElementById('daily-sneak-peek');
+  const allAdsGrid = document.getElementById('all-sneak-peeks-grid');
+  const section = document.getElementById('sneak-peek-section');
+  const allAdsLink = document.getElementById('sneak-peek-all-ads');
+
+  if (!dailyContainer && !allAdsGrid) return;
+
+  try {
+    const [sneakResponse, artistResponse] = await Promise.all([
+      fetch(SNEAK_PEEK_MANIFEST_PATH),
+      fetch(ARTIST_MANIFEST_PATH)
+    ]);
+
+    if (!sneakResponse.ok) {
+      throw new Error(`Sneak peek manifest could not be loaded: ${sneakResponse.status}`);
+    }
+
+    const sneakData = await sneakResponse.json();
+    const sneakPeeks = Array.isArray(sneakData) ? sneakData : sneakData.sneakPeeks;
+    const activeSneakPeeks = Array.isArray(sneakPeeks)
+      ? sneakPeeks.filter((sneakPeek) => sneakPeek && sneakPeek.active !== false)
+      : [];
+    const artists = artistResponse?.ok ? await artistResponse.json() : { artists: [] };
+    const artistRecords = Array.isArray(artists) ? artists : artists.artists;
+
+    if (allAdsGrid) {
+      allAdsGrid.innerHTML = activeSneakPeeks.length
+        ? activeSneakPeeks.map((sneakPeek) => renderSneakPeekCard(sneakPeek, artistRecords)).join('')
+        : '<p class="sneak-peek-empty">There are no active daily sneak peeks right now.</p>';
+    }
+
+    if (!dailyContainer) return;
+
+    if (!activeSneakPeeks.length) {
+      if (section) section.hidden = true;
+      return;
+    }
+
+    const dailySelection = selectDailySneakPeek(activeSneakPeeks);
+    dailyContainer.innerHTML = renderSneakPeekCard(
+      dailySelection.sneakPeek,
+      artistRecords,
+      { statusLabel: dailySelection.statusLabel }
+    );
+
+    if (section) section.hidden = false;
+    const activeArtistCount = new Set(activeSneakPeeks.map((sneakPeek) => sneakPeek.artistId || sneakPeek.artistName)).size;
+    if (allAdsLink) allAdsLink.hidden = activeArtistCount <= 7;
+  } catch (error) {
+    if (section) section.hidden = true;
+    if (allAdsGrid) {
+      allAdsGrid.innerHTML = '<p class="sneak-peek-empty">Daily sneak peeks are unavailable right now.</p>';
+    }
+    console.error('Error loading sneak peek manifest:', error);
+  }
+}
+
+function selectDailySneakPeek(sneakPeeks) {
+  const today = new Date().getDay();
+  const todaySneakPeek = sneakPeeks.find((sneakPeek) => getSneakPeekDayIndex(sneakPeek.day) === today);
+  if (todaySneakPeek) {
+    return {
+      sneakPeek: todaySneakPeek,
+      statusLabel: "Today's Sneak Peek"
+    };
+  }
+
+  const nextSneakPeek = sneakPeeks
+    .map((sneakPeek) => ({
+      sneakPeek,
+      daysAway: getDaysUntilSneakPeek(sneakPeek.day, today)
+    }))
+    .filter((entry) => entry.daysAway > 0)
+    .sort((left, right) => left.daysAway - right.daysAway)[0];
+
+  return {
+    sneakPeek: nextSneakPeek?.sneakPeek || sneakPeeks[0],
+    statusLabel: nextSneakPeek
+      ? `Next ${formatSneakPeekDay(nextSneakPeek.sneakPeek.day)} Sneak Peek`
+      : 'Daily Sneak Peek'
+  };
+}
+
+function getDaysUntilSneakPeek(day, today) {
+  const dayIndex = getSneakPeekDayIndex(day);
+  if (dayIndex < 0) return Number.POSITIVE_INFINITY;
+  return (dayIndex - today + 7) % 7 || 7;
+}
+
+function getSneakPeekDayIndex(day) {
+  if (Number.isInteger(day) && day >= 0 && day <= 6) return day;
+
+  return ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+    .indexOf(String(day || '').trim().toLowerCase());
+}
+
+function formatSneakPeekDay(day) {
+  const dayIndex = getSneakPeekDayIndex(day);
+  if (dayIndex < 0) return 'Daily';
+
+  return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayIndex];
+}
+
+function getSneakPeekArtist(sneakPeek, artists) {
+  const artistRecords = Array.isArray(artists) ? artists : [];
+  return artistRecords.find((artist) => artist.id === sneakPeek.artistId) || {
+    name: sneakPeek.artistName || 'Featured Artist'
+  };
+}
+
+function renderSneakPeekCard(sneakPeek, artists, options = {}) {
+  const artist = getSneakPeekArtist(sneakPeek, artists);
+  const title = String(sneakPeek.title || 'Sneak Peek').trim();
+  const dayLabel = formatSneakPeekDay(sneakPeek.day);
+  const statusLabel = options.statusLabel || `${dayLabel} Sneak Peek`;
+  const youtubeId = getYoutubeId(sneakPeek.youtubeId || sneakPeek.youtubeUrl);
+  const embedUrl = buildYoutubeEmbedUrl(youtubeId);
+  const destination = String(sneakPeek.link || '').trim();
+  const destinationLabel = String(sneakPeek.linkLabel || 'Explore Artist').trim();
+  const video = embedUrl
+    ? `
+      <div class="sneak-peek-video-frame">
+        <iframe
+          src="${escapeAttribute(embedUrl)}"
+          title="${escapeAttribute(`${title} by ${artist.name || 'featured artist'}`)}"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen></iframe>
+      </div>
+    `
+    : '<div class="sneak-peek-video-frame sneak-peek-video-placeholder">The next sneak peek video will appear here.</div>';
+  const link = destination
+    ? `<a class="sneak-peek-link" href="${escapeAttribute(destination)}"${/^https?:\/\//i.test(destination) ? ' target="_blank" rel="noopener noreferrer"' : ''}>${escapeHtml(destinationLabel)}</a>`
+    : '';
+
+  return `
+    <article class="sneak-peek-card">
+      ${video}
+      <div class="sneak-peek-copy">
+        <p class="sneak-peek-kicker">${escapeHtml(statusLabel)}</p>
+        <p class="sneak-peek-artist">${escapeHtml(artist.name || 'Featured Artist')}</p>
+        <h3>${escapeHtml(title)}</h3>
+        <p>${escapeHtml(sneakPeek.description || 'A short look at what is coming next.')}</p>
+        ${link ? `<div class="sneak-peek-actions">${link}</div>` : ''}
+      </div>
+    </article>
+  `;
 }
 
 function setupVaultControls() {
@@ -635,6 +787,20 @@ function buildYoutubeMusicUrl(value) {
   if (!isValidYoutubeId(candidate)) return '';
 
   return `https://music.youtube.com/watch?v=${encodeURIComponent(candidate)}`;
+}
+
+function getYoutubeId(value) {
+  const candidate = String(value || '').trim();
+  if (isValidYoutubeId(candidate)) return candidate;
+
+  try {
+    const url = new URL(candidate);
+    const pathMatch = /^\/(?:shorts\/|embed\/|live\/)?([A-Za-z0-9_-]{11})/.exec(url.pathname);
+    const queryId = url.searchParams.get('v');
+    return pathMatch?.[1] || (isValidYoutubeId(queryId) ? queryId : '');
+  } catch (error) {
+    return '';
+  }
 }
 
 function buildYoutubeEmbedUrl(value) {

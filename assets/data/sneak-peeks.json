@@ -1,0 +1,15 @@
+{
+  "sneakPeeks": [
+    {
+      "id": "ivoleus-taco-tuesday",
+      "artistId": "ivoleus-balam",
+      "day": "tuesday",
+      "title": "Taco Tuesday Sneak Peek",
+      "description": "A short look at the next Ivoleus Balam release, made for YouTube Shorts and social sharing.",
+      "youtubeId": "",
+      "link": "#vault",
+      "linkLabel": "Explore the Vault",
+      "active": true
+    }
+  ]
+}
