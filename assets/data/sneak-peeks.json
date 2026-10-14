@@ -3,12 +3,15 @@
     {
       "id": "ivoleus-taco-tuesday",
       "artistId": "ivoleus-balam",
-      "day": "tuesday",
+      "adDay": "tuesday",
+      "releaseDay": "Friday",
+      "releaseDate": "",
+      "releaseTitle": "",
       "title": "Taco Tuesday Sneak Peek",
-      "description": "A short look at the next Ivoleus Balam release, made for YouTube Shorts and social sharing.",
+      "description": "A radio-style artist ad introducing the upcoming Friday release, its sound, and the story behind the song.",
       "youtubeId": "jX03AjpGiXo",
       "link": "#vault",
-      "linkLabel": "Explore the sneakPeeks",
+      "linkLabel": "Explore the Vault",
       "active": true
     }
   ]

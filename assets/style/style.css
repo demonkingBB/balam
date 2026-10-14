@@ -656,6 +656,11 @@ input:focus-visible {
   line-height: 1.15;
 }
 
+.sneak-peek-release {
+  margin-bottom: 0.65rem;
+  color: var(--gold-soft);
+}
+
 .sneak-peek-copy > p:last-of-type {
   color: var(--text-muted);
 }

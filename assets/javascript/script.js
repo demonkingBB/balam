@@ -107,12 +107,12 @@ async function loadTrackManifest() {
 }
 
 async function loadSneakPeekManifest() {
-  const dailyContainer = document.getElementById('daily-sneak-peek');
+  const scheduledAdContainer = document.getElementById('scheduled-artist-ad');
   const allAdsGrid = document.getElementById('all-sneak-peeks-grid');
   const section = document.getElementById('sneak-peek-section');
   const allAdsLink = document.getElementById('sneak-peek-all-ads');
 
-  if (!dailyContainer && !allAdsGrid) return;
+  if (!scheduledAdContainer && !allAdsGrid) return;
 
   try {
     const [sneakResponse, artistResponse] = await Promise.all([
@@ -135,21 +135,21 @@ async function loadSneakPeekManifest() {
     if (allAdsGrid) {
       allAdsGrid.innerHTML = activeSneakPeeks.length
         ? activeSneakPeeks.map((sneakPeek) => renderSneakPeekCard(sneakPeek, artistRecords)).join('')
-        : '<p class="sneak-peek-empty">There are no active daily sneak peeks right now.</p>';
+        : '<p class="sneak-peek-empty">There are no active artist ads right now.</p>';
     }
 
-    if (!dailyContainer) return;
+    if (!scheduledAdContainer) return;
 
     if (!activeSneakPeeks.length) {
       if (section) section.hidden = true;
       return;
     }
 
-    const dailySelection = selectDailySneakPeek(activeSneakPeeks);
-    dailyContainer.innerHTML = renderSneakPeekCard(
-      dailySelection.sneakPeek,
+    const scheduledSelection = selectScheduledArtistAd(activeSneakPeeks);
+    scheduledAdContainer.innerHTML = renderSneakPeekCard(
+      scheduledSelection.sneakPeek,
       artistRecords,
-      { statusLabel: dailySelection.statusLabel }
+      { statusLabel: scheduledSelection.statusLabel }
     );
 
     if (section) section.hidden = false;
@@ -158,36 +158,56 @@ async function loadSneakPeekManifest() {
   } catch (error) {
     if (section) section.hidden = true;
     if (allAdsGrid) {
-      allAdsGrid.innerHTML = '<p class="sneak-peek-empty">Daily sneak peeks are unavailable right now.</p>';
+      allAdsGrid.innerHTML = '<p class="sneak-peek-empty">Artist ads are unavailable right now.</p>';
     }
     console.error('Error loading sneak peek manifest:', error);
   }
 }
 
-function selectDailySneakPeek(sneakPeeks) {
+function selectScheduledArtistAd(sneakPeeks) {
   const today = new Date().getDay();
-  const todaySneakPeek = sneakPeeks.find((sneakPeek) => getSneakPeekDayIndex(sneakPeek.day) === today);
+  const todaySneakPeek = sneakPeeks.find((sneakPeek) => getSneakPeekDayIndex(sneakPeek.adDay || sneakPeek.day) === today);
   if (todaySneakPeek) {
     return {
       sneakPeek: todaySneakPeek,
-      statusLabel: "Today's Sneak Peek"
+      statusLabel: getSneakPeekReleaseLabel(todaySneakPeek, true)
     };
   }
 
   const nextSneakPeek = sneakPeeks
     .map((sneakPeek) => ({
       sneakPeek,
-      daysAway: getDaysUntilSneakPeek(sneakPeek.day, today)
+      daysAway: getDaysUntilSneakPeek(sneakPeek.adDay || sneakPeek.day, today)
     }))
     .filter((entry) => entry.daysAway > 0)
     .sort((left, right) => left.daysAway - right.daysAway)[0];
 
   return {
     sneakPeek: nextSneakPeek?.sneakPeek || sneakPeeks[0],
-    statusLabel: nextSneakPeek
-      ? `Next ${formatSneakPeekDay(nextSneakPeek.sneakPeek.day)} Sneak Peek`
-      : 'Daily Sneak Peek'
+    statusLabel: getSneakPeekReleaseLabel(nextSneakPeek?.sneakPeek || sneakPeeks[0], false)
   };
+}
+
+function getSneakPeekReleaseLabel(sneakPeek, isCurrentAdDay) {
+  const releaseDay = String(sneakPeek?.releaseDay || '').trim();
+  const releaseDate = formatSneakPeekReleaseDate(sneakPeek?.releaseDate);
+  const dayLabel = releaseDay ? `${releaseDay}'s` : "Friday's";
+  const dateLabel = releaseDate ? ` - ${releaseDate}` : '';
+
+  return `${isCurrentAdDay ? 'This' : 'Upcoming'} ${dayLabel} Release Ad${dateLabel}`;
+}
+
+function formatSneakPeekReleaseDate(releaseDate) {
+  if (!releaseDate) return '';
+
+  const parsed = parseReleaseDate(releaseDate);
+  if (Number.isNaN(parsed.getTime())) return '';
+
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+  }).format(parsed);
 }
 
 function getDaysUntilSneakPeek(day, today) {
@@ -205,7 +225,7 @@ function getSneakPeekDayIndex(day) {
 
 function formatSneakPeekDay(day) {
   const dayIndex = getSneakPeekDayIndex(day);
-  if (dayIndex < 0) return 'Daily';
+  if (dayIndex < 0) return 'Scheduled';
 
   return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayIndex];
 }
@@ -219,9 +239,10 @@ function getSneakPeekArtist(sneakPeek, artists) {
 
 function renderSneakPeekCard(sneakPeek, artists, options = {}) {
   const artist = getSneakPeekArtist(sneakPeek, artists);
-  const title = String(sneakPeek.title || 'Sneak Peek').trim();
-  const dayLabel = formatSneakPeekDay(sneakPeek.day);
-  const statusLabel = options.statusLabel || `${dayLabel} Sneak Peek`;
+  const title = String(sneakPeek.title || 'Artist Ad').trim();
+  const dayLabel = formatSneakPeekDay(sneakPeek.adDay || sneakPeek.day);
+  const statusLabel = options.statusLabel || `${dayLabel} Artist Ad`;
+  const releaseTitle = String(sneakPeek.releaseTitle || '').trim();
   const youtubeId = getYoutubeId(sneakPeek.youtubeId || sneakPeek.youtubeUrl);
   const embedUrl = buildYoutubeEmbedUrl(youtubeId);
   const destination = String(sneakPeek.link || '').trim();
@@ -237,7 +258,7 @@ function renderSneakPeekCard(sneakPeek, artists, options = {}) {
           allowfullscreen></iframe>
       </div>
     `
-    : '<div class="sneak-peek-video-frame sneak-peek-video-placeholder">The next sneak peek video will appear here.</div>';
+    : '<div class="sneak-peek-video-frame sneak-peek-video-placeholder">This artist ad video will appear here soon.</div>';
   const link = destination
     ? `<a class="sneak-peek-link" href="${escapeAttribute(destination)}"${/^https?:\/\//i.test(destination) ? ' target="_blank" rel="noopener noreferrer"' : ''}>${escapeHtml(destinationLabel)}</a>`
     : '';
@@ -249,7 +270,8 @@ function renderSneakPeekCard(sneakPeek, artists, options = {}) {
         <p class="sneak-peek-kicker">${escapeHtml(statusLabel)}</p>
         <p class="sneak-peek-artist">${escapeHtml(artist.name || 'Featured Artist')}</p>
         <h3>${escapeHtml(title)}</h3>
-        <p>${escapeHtml(sneakPeek.description || 'A short look at what is coming next.')}</p>
+        ${releaseTitle ? `<p class="sneak-peek-release"><strong>Upcoming release:</strong> ${escapeHtml(releaseTitle)}</p>` : ''}
+        <p>${escapeHtml(sneakPeek.description || 'A radio-style ad for the upcoming Friday release.')}</p>
         ${link ? `<div class="sneak-peek-actions">${link}</div>` : ''}
       </div>
     </article>
