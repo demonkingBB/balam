@@ -2,7 +2,6 @@ const TRACK_MANIFEST_PATH = 'assets/data/tracks.json';
 const ARTIST_MANIFEST_PATH = 'assets/data/artists.json';
 const SNEAK_PEEK_MANIFEST_PATH = 'assets/data/sneak-peeks.json';
 const DEFAULT_ARTIST_ID = 'ivoleus-balam';
-const FEATURED_TRACK_LIMIT = 8;
 const PRIMARY_CATEGORIES = [
   { id: 'urban', label: 'Urban' },
   { id: 'latin', label: 'Latin' },
@@ -34,6 +33,7 @@ let vaultArtists = [DEFAULT_ARTIST];
 let vaultArtistFilter = DEFAULT_ARTIST_ID;
 let vaultCategoryFilter = 'all';
 const revealedTrackIds = new Set();
+let lastVaultColumnCount = null;
 
 initSite();
 
@@ -49,6 +49,7 @@ function initSite() {
 function onSiteReady() {
   document.addEventListener('click', handleVaultDocumentClick);
   setupVaultControls();
+  window.addEventListener('resize', handleVaultResponsiveResize, { passive: true });
   loadTrackManifest();
   loadSneakPeekManifest();
   setupDropForm();
@@ -472,7 +473,7 @@ function renderVaultGrid() {
   let visibleTracks = [...visibleActiveTracks, ...visibleLockedTracks];
 
   if (vaultFilter === 'featured') {
-    visibleTracks = visibleTracks.slice(0, FEATURED_TRACK_LIMIT);
+    visibleTracks = visibleTracks.slice(0, getFeaturedTrackLimit(grid));
   }
 
   if (!visibleTracks.length) {
@@ -490,6 +491,27 @@ function renderVaultGrid() {
   if (resultsCount) {
     const trackLabel = visibleTracks.length === 1 ? 'release' : 'releases';
     resultsCount.textContent = `${visibleTracks.length} ${trackLabel} shown`;
+  }
+}
+
+function getVaultColumnCount(grid) {
+  const computedColumns = window.getComputedStyle(grid).gridTemplateColumns;
+  return computedColumns.split(/\s+/).filter(Boolean).length || 1;
+}
+
+function getFeaturedTrackLimit(grid) {
+  const columnCount = getVaultColumnCount(grid);
+  lastVaultColumnCount = columnCount;
+  return columnCount % 2 === 0 ? 8 : 9;
+}
+
+function handleVaultResponsiveResize() {
+  const grid = document.getElementById('vault-grid');
+  if (!grid) return;
+
+  const columnCount = getVaultColumnCount(grid);
+  if (columnCount !== lastVaultColumnCount) {
+    renderVaultGrid();
   }
 }
 

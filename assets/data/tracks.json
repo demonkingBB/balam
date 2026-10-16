@@ -145,7 +145,7 @@
       "id": "ib_0007",
       "artistId": "ivoleus-balam",
       "title": "Jianitinamerah",
-      "week": "Released",
+      "week": "2026",
       "genre": "Fusion",
       "primaryCategory": "culture",
       "genres": ["fusion"],
@@ -168,7 +168,7 @@
       "id": "ib_0008",
       "artistId": "ivoleus-balam",
       "title": "Never Crawl",
-      "week": "Released",
+      "week": "2026",
       "genre": "Alternative",
       "primaryCategory": "acoustic",
       "genres": ["alternative"],
@@ -191,7 +191,7 @@
       "id": "ib_0009",
       "artistId": "ivoleus-balam",
       "title": "Fake Sugar",
-      "week": "Coming Oct 16th 2026",
+      "week": "2026",
       "genre": "R&B",
       "primaryCategory": "urban",
       "genres": ["r&b"],
@@ -287,7 +287,30 @@
       },
       "relatedLoreIds": [],
       "status": "active"
-    } 
+    } ,
+
+    {
+      "id": "ib_0013",
+      "artistId": "ivoleus-balam",
+      "title": "Illusions",
+      "week": "Coming Nov 13th 2026",
+      "genre": "R&B",
+      "primaryCategory": "urban",
+      "genres": ["modern electric","r&b"],
+      "tags": [],
+      "cover": "assets/images/013_illusions.webp",
+      "coverAlt": "Track 13 cover art",
+      "lyrics": "",
+      "previewAudio": "assets/audio/previews/013_illusions.mp3",
+      "youtubeId": "",
+      "spotifyUrl": "",
+      "appleMusicUrl": "",
+      "hyperfollowUrl": "",
+      "releaseDate": "2026-11-13",
+      "featured": false,
+      "relatedLoreIds": [],
+      "status": "active"
+    }
 
 
   ]
