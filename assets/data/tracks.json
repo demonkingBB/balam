@@ -311,6 +311,29 @@
       "relatedLoreIds": [],
       "status": "active"
     },
+{
+      "id": "ib_0014",
+      "artistId": "ivoleus-balam",
+      "title": "Forgot Me",
+      "week": "Coming Nov 20th 2026",
+      "genre": "Nerd Core",
+      "primaryCategory": "urban",
+      "genres": ["modern electric","r&b"],
+      "tags": [],
+      "cover": "assets/images/14_forgot_me.png",
+      "coverAlt": "Track 14 cover art",
+      "lyrics": "",
+      "previewAudio": "assets/audio/previews/014_forgot_me.mp3",
+      "youtubeId": "",
+      "spotifyUrl": "",
+      "appleMusicUrl": "",
+      "hyperfollowUrl": "",
+      "releaseDate": "2026-11-20",
+      "featured": false,
+      "relatedLoreIds": [],
+      "status": "active"
+    },
+
     {
       "id": "st_0001",
       "artistId": "sarah-tonin",
