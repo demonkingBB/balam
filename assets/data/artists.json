@@ -7,6 +7,14 @@
       "coverAlt": "Ivoleus Balam artist artwork",
       "description": "Pop fusion, Latin, urban, nerdcore, and culturally inspired releases.",
       "isPrimary": true
+    },
+    {
+      "id":"sarah-tonin",
+      "name": "Sarah Tonin",
+      "cover": "assets/images/st001_red_lights.png",
+      "coverAlt":"Sarah Tonin Redlights artwork",
+      "description":"Releases by  Sarah Tonin",
+      "isPrimary":false
     }
   ]
 }
