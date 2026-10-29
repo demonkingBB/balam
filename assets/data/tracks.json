@@ -447,6 +447,29 @@
       "featured": false,
       "relatedLoreIds": [],
       "status": "active"
+    },
+
+    {
+      "id": "bm_0001",
+      "artistId": "banana-man",
+      "title": "Peel It Back",
+      "week": "2026",
+      "genre": "Rock hop",
+      "primaryCategory": "hip hop",
+      "genres": ["modern","band"],
+      "tags": [],
+      "cover": "assets/images/artists/banana_man_tracks/bm_peel_it_back.PNG",
+      "coverAlt": "Track 1 cover art",
+      "lyrics": "",
+      "previewAudio": "assets/audio_artists/banana_man/peel_it_back.mp3",
+      "youtubeId": "",
+      "spotifyUrl": "",
+      "appleMusicUrl": "",
+      "hyperfollowUrl": "",
+      "releaseDate": "",
+      "featured": false,
+      "relatedLoreIds": [],
+      "status": "active"
     }
 
   ]

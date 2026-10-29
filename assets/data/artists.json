@@ -15,6 +15,14 @@
       "coverAlt":"Sarah Tonin Redlights artwork",
       "description":"Releases by  Sarah Tonin",
       "isPrimary":false
+    },
+    {
+      "id":"banana-man",
+      "name": "Banana Man",
+      "cover": "assets/images/artists/banana_man.PNG",
+      "coverAlt":"Banana Man artwork",
+      "description":"Releases by Banana Man",
+      "isPrimary":false
     }
   ]
 }
