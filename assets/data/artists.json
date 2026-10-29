@@ -19,7 +19,7 @@
     {
       "id":"banana-man",
       "name": "Banana Man",
-      "cover": "assets/images/artists/banana_man.PNG",
+      "cover": "assets/images/artists/banana_man.png",
       "coverAlt":"Banana Man artwork",
       "description":"Releases by Banana Man",
       "isPrimary":false
