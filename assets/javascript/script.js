@@ -721,6 +721,7 @@ function isPinActive(track) {
 function populateHeroTrack(track) {
   const heroEyebrow = document.getElementById('hero-eyebrow');
   const heroCover = document.getElementById('hero-cover');
+  const artworkWrapper = heroCover?.closest('.artwork-wrapper');
   const heroContentGate = document.getElementById('hero-content-gate');
   const heroBadge = document.getElementById('hero-badge');
   const heroTitle = document.getElementById('hero-title');
@@ -733,6 +734,8 @@ function populateHeroTrack(track) {
       heroCover.alt = DEFAULT_HERO_COVER_ALT;
       heroCover.hidden = false;
     }
+
+    artworkWrapper?.classList.remove('is-content-gated');
 
     if (heroContentGate) {
       heroContentGate.hidden = true;
@@ -778,8 +781,10 @@ function populateHeroTrack(track) {
   if (heroCover) {
     heroCover.src = track.cover || DEFAULT_HERO_COVER;
     heroCover.alt = track.coverAlt || `${trackTitle} cover art`;
-    heroCover.hidden = contentIsGated;
+    heroCover.hidden = false;
   }
+
+  artworkWrapper?.classList.toggle('is-content-gated', contentIsGated);
 
   if (heroContentGate) {
     heroContentGate.hidden = !contentIsGated;
@@ -1125,10 +1130,12 @@ function renderTrackCard(track, index, featuredTrack) {
 
 function renderGatedTrackCard(track, index, notice) {
   const trackAnchorId = track.id ? `track-${sanitizeId(track.id)}` : '';
+  const cover = track.cover || 'assets/images/out_of_body_spiritual.webp';
 
   return `
     <article${trackAnchorId ? ` id="${escapeAttribute(trackAnchorId)}" data-track-id="${escapeAttribute(track.id)}"` : ''} class="vault-card content-gated" aria-label="${escapeAttribute(notice.label)} release">
       <div class="card-img-holder">
+        <img class="content-gated-cover" src="${escapeAttribute(cover)}" alt="" aria-hidden="true" loading="lazy">
         <div class="content-gate card-content-gate">
           ${renderContentGate(track, notice)}
         </div>

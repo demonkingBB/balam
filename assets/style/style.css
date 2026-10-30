@@ -200,6 +200,10 @@ a {
   box-shadow: 0 20px 55px rgba(0, 0, 0, 0.62), 0 0 0 1px rgba(255, 255, 255, 0.04), var(--shadow-gold);
 }
 
+.artwork-wrapper.is-content-gated .hero-cover {
+  visibility: hidden;
+}
+
 .badge {
   position: absolute;
   left: 1rem;
@@ -396,11 +400,16 @@ a {
 }
 
 .hero-content-gate {
-  width: min(100%, 420px);
-  min-height: 280px;
-  aspect-ratio: 1;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
   padding: 2rem;
   border-radius: 18px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   box-shadow: 0 20px 55px rgba(0, 0, 0, 0.42), var(--shadow-gold);
 }
 
@@ -422,6 +431,15 @@ a {
 .card-content-gate .content-gate-copy {
   width: 100%;
   margin: auto;
+}
+
+.content-gated-cover {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(14px);
+  transform: scale(1.06);
 }
 
 .content-gate-kicker {
