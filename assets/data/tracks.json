@@ -102,7 +102,7 @@
       "week": "2026",
       "genre": "Hip Hop",
       "primaryCategory": "urban",
-      "genres": ["hip-hop, nerd-hop"],
+      "genres": ["hip-hop", "nerd-hop"],
       "tags": [],
       "cover": "assets/images/005_leftallherdoubts.webp",
       "coverAlt": "Track 05 cover art",
@@ -218,7 +218,7 @@
       "genre": "Country",
       "primaryCategory": "roots",
       "genres": ["country"],
-      "tags": [],
+      "tags": ["mature-themes"],
       "cover": "assets/images/010_bodonkadonk_wiggle.webp",
       "coverAlt": "Track 10 cover art",
       "lyrics": "assets/lyrics/010_badonkadonk.txt",
@@ -229,6 +229,11 @@
       "hyperfollowUrl": "https://distrokid.com/hyperfollow/ivoleusbalam/bodonkadonk-wiggle?ref=release",
       "releaseDate": "2026-10-23",
       "featured": true,
+      "contentNotice": {
+        "label": "Mature Themes",
+        "requiresReveal": true,
+        "message": "This song contains suggestive themes and sexual innuendo."
+      },
       "relatedLoreIds": [],
       "status": "active"
     } ,
@@ -333,7 +338,28 @@
       "relatedLoreIds": [],
       "status": "active"
     },
-
+{
+      "id": "ib_0014",
+      "artistId": "ivoleus-balam",
+      "title": "Phone Call",
+      "week": "Coming Nov 27th 2026",
+      "genre": "life",
+      "primaryCategory": "urban",
+      "genres": ["hip-hop","r&b"],
+      "tags": [],
+      "cover": "assets/images/015_phone_call.png",
+      "coverAlt": "Track 15 cover art",
+      "lyrics": "",
+      "previewAudio": "assets/audio/previews/015_phone_call.mp3",
+      "youtubeId": "",
+      "spotifyUrl": "",
+      "appleMusicUrl": "",
+      "hyperfollowUrl": "",
+      "releaseDate": "2026-11-27",
+      "featured": false,
+      "relatedLoreIds": [],
+      "status": "active"
+    },
     {
       "id": "st_0001",
       "artistId": "sarah-tonin",

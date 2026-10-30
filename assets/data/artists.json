@@ -3,8 +3,8 @@
     {
       "id": "ivoleus-balam",
       "name": "Ivoleus Balam",
-      "cover": "assets/images/ivoleus.png",
-      "coverAlt": "Ivoleus Balam artist artwork",
+      "cover": "assets/images/logo.png",
+      "coverAlt": "Ivoleus Balam logo",
       "description": "Pop fusion, Latin, urban, nerdcore, and culturally inspired releases.",
       "isPrimary": true
     },

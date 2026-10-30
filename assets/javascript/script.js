@@ -21,8 +21,8 @@ const DEFAULT_ARTIST = {
 };
 const DEFAULT_HERO_TITLE = 'Out of My Body';
 const DEFAULT_HERO_META = 'Pop fusion - Released this Friday';
-const DEFAULT_HERO_COVER = 'assets/images/out_of_body_spiritual.webp';
-const DEFAULT_HERO_COVER_ALT = 'Featured release artwork for Out of My Body';
+const DEFAULT_HERO_COVER = 'assets/images/logo.png';
+const DEFAULT_HERO_COVER_ALT = 'Ivoleus Balam logo';
 
 let vaultTracks = [];
 let vaultFilter = 'featured';
