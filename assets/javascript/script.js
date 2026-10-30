@@ -96,6 +96,7 @@ async function loadTrackManifest() {
 
     vaultTracks = tracks;
     normalizeVaultSelections();
+    applyVaultUrlState();
     populateVaultFilterOptions();
     renderVaultGrid();
   } catch (error) {
@@ -291,6 +292,7 @@ function setupVaultControls() {
   if (searchInput) {
     searchInput.addEventListener('input', (event) => {
       vaultSearchQuery = String(event.target.value || '').trim().toLowerCase();
+      updateVaultUrl();
       renderVaultGrid();
     });
   }
@@ -300,7 +302,10 @@ function setupVaultControls() {
       vaultArtistFilter = String(event.target.value || DEFAULT_ARTIST_ID);
       vaultCategoryFilter = 'all';
       vaultGenreFilter = 'all';
+      vaultFilter = 'all';
+      updateVaultFilterButtons(vaultFilter);
       populateVaultFilterOptions();
+      updateVaultUrl();
       renderVaultGrid();
     });
   }
@@ -354,6 +359,7 @@ function setupVaultControls() {
         button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       });
 
+      updateVaultUrl();
       renderVaultGrid();
     });
   }
@@ -368,6 +374,74 @@ function setupVaultControls() {
       });
       renderVaultGrid();
     });
+  });
+}
+
+function applyVaultUrlState() {
+  const params = new URLSearchParams(window.location.search);
+  const artistParam = String(params.get('artist') || '').trim();
+  const searchParam = String(params.get('q') || '').trim();
+  const searchInput = document.getElementById('vault-search-input');
+
+  if (artistParam) {
+    const normalizedArtistParam = normalizeVaultValue(artistParam);
+    if (normalizedArtistParam === 'all') {
+      vaultArtistFilter = 'all';
+      vaultFilter = 'all';
+      updateVaultFilterButtons(vaultFilter);
+    } else {
+      const artist = vaultArtists.find((candidate) => (
+        normalizeVaultValue(candidate.id) === normalizedArtistParam
+        || normalizeVaultValue(candidate.name) === normalizedArtistParam
+      ));
+      if (artist) {
+        vaultArtistFilter = String(artist.id);
+        vaultFilter = 'all';
+        updateVaultFilterButtons(vaultFilter);
+      }
+    }
+  }
+
+  vaultSearchQuery = searchParam.toLowerCase();
+  if (searchInput) {
+    searchInput.value = searchParam;
+  }
+
+  if (artistParam || searchParam) {
+    const vaultSection = document.getElementById('vault');
+    if (vaultSection) {
+      window.requestAnimationFrame(() => {
+        vaultSection.scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+  }
+}
+
+function updateVaultUrl() {
+  const url = new URL(window.location.href);
+  const searchInput = document.getElementById('vault-search-input');
+  const searchParam = String(searchInput?.value || '').trim();
+
+  if (vaultArtistFilter && (vaultArtistFilter !== getPrimaryArtist().id || vaultFilter === 'all')) {
+    url.searchParams.set('artist', vaultArtistFilter);
+  } else {
+    url.searchParams.delete('artist');
+  }
+
+  if (searchParam) {
+    url.searchParams.set('q', searchParam);
+  } else {
+    url.searchParams.delete('q');
+  }
+
+  window.history.replaceState({}, '', url);
+}
+
+function updateVaultFilterButtons(activeFilter) {
+  document.querySelectorAll('.vault-filter').forEach((button) => {
+    const isActive = button.dataset.filter === activeFilter;
+    button.classList.toggle('is-active', isActive);
+    button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
   });
 }
 
