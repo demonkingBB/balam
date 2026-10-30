@@ -408,10 +408,25 @@ function applyVaultUrlState() {
   }
 
   if (artistParam || searchParam) {
-    const vaultSection = document.getElementById('vault');
-    if (vaultSection) {
+    const scrollTarget = document.getElementById('vault-artist-context')
+      || document.getElementById('vault');
+    if (scrollTarget) {
       window.requestAnimationFrame(() => {
-        vaultSection.scrollIntoView({ behavior: 'smooth' });
+        window.requestAnimationFrame(() => {
+          const stickyHeader = document.querySelector('.navbar');
+          const headerOffset = stickyHeader
+            ? stickyHeader.getBoundingClientRect().height
+            : 0;
+          const targetTop = window.scrollY
+            + scrollTarget.getBoundingClientRect().top
+            - headerOffset
+            - 12;
+
+          window.scrollTo({
+            top: Math.max(0, targetTop),
+            behavior: 'smooth'
+          });
+        });
       });
     }
   }
