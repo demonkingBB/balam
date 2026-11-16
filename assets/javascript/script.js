@@ -1136,6 +1136,27 @@ function renderProviderLink(provider) {
   `;
 }
 
+function renderTrackStreamingLinks(track) {
+  const providers = [
+    { className: 'spotify', label: 'Spotify', href: track.spotifyUrl || '', icon: '♪' },
+    { className: 'youtube', label: 'YouTube Music', href: track.youtubeMusicUrl || buildYoutubeMusicUrl(track.youtubeId), icon: '▶' },
+    { className: 'apple', label: 'Apple Music', href: track.appleMusicUrl || '', icon: '♫' },
+    { className: 'hyperfollow', label: 'HyperFollow', href: track.hyperfollowUrl || '', icon: 'H' }
+  ].filter((provider) => provider.href);
+
+  if (!providers.length) return '';
+
+  return `
+    <nav class="card-streaming-links" aria-label="${escapeAttribute(`${track.title || 'Track'} streaming links`)}">
+      ${providers.map((provider) => `
+        <a class="card-stream-link ${provider.className}" href="${escapeAttribute(provider.href)}" target="_blank" rel="noopener noreferrer" aria-label="Listen to ${escapeAttribute(track.title || 'track')} on ${provider.label}" title="${provider.label}">
+          <span aria-hidden="true">${provider.icon}</span>
+        </a>
+      `).join('')}
+    </nav>
+  `;
+}
+
 function renderTrackCard(track, index, featuredTrack) {
   const trackAnchorId = track.id ? `track-${sanitizeId(track.id)}` : '';
 
@@ -1191,6 +1212,7 @@ function renderTrackCard(track, index, featuredTrack) {
       <div class="card-info">
         <h3>${escapeHtml(trackTitle)}</h3>
         <p class="genre">${escapeHtml(getTrackGenre(track) || 'Track')}</p>
+        ${renderTrackStreamingLinks(track)}
         ${cardPreviewPath ? `
           <div class="track-preview">
             <span class="track-preview-label">Preview</span>
