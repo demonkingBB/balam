@@ -1,4 +1,4 @@
-[Intro: Spoken phone conversation. only can hear the guy clearly, maybe hear the girl at end say bye or talk to you later, with realistic ambient parking lot sounds outside a gym—distant traffic, occasional car doors, footsteps, light wind. No music at first. Toward last 5 seconds of intro door opens and beat fades in ]
+[Spoken]
 
 (Hey... how've you been?
 Yeah, it's been a while. I didn't want to be that guy who never checks in—but hey, you never called me either.
@@ -11,7 +11,7 @@ Yeah... I've gotta get going. It was nice talking to you.)
 
 [softly] miss you!
 
-[Verse 1]
+[Music]
 
 Why does it feel like sometimes friends end
 All your lil laughs, I dont know what they meant
@@ -28,15 +28,13 @@ Thinking about us and if we could meet
 But If friendship's all we're meant to be,
 That's still enough to mean the world to me
 
-[Chorus]
-
 all the memories flooding in fast
 All our history and our cute past
 All these feelings I have
 They keep crashing over me like waves
 
 I take a breath cuz time has moved on
-Some things dissappear and poof their gone
+Some things disappear and poof their gone
 I Remember somethings just change
 I choose the man I am each day
 
@@ -44,8 +42,6 @@ Because all I know is if I care
 I got to be better than my pain
 Most would say it isn't fair
 Like a flood of darkness and rain
-
-[outro]
 
 Wishing we could meet up
 Praying every night for us
