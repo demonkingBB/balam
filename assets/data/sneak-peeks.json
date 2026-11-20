@@ -5,10 +5,10 @@
       "artistId": "ivoleus-balam",
       "adDay": "tuesday",
       "releaseDay": "Friday",
-      "releaseDate": "",
+      "releaseDate": "11-17-2026",
       "releaseTitle": "",
       "title": "Taco Tuesday Sneak Peek",
-      "description": "A radio-style artist ad introducing the upcoming Friday release, its sound, and the story behind the song.",
+      "description": "A radio-style artist ad introducing the upcoming Friday release its sound, audio teasers, and the story behind the song.",
       "youtubeId": "yzsMDpZEBEY",
       "link": "#vault",
       "linkLabel": "Explore the Vault",
@@ -19,14 +19,14 @@
       "artistId": "ivoleus-balam",
       "adDay": "tuesday",
       "releaseDay": "Friday",
-      "releaseDate": "",
+      "releaseDate": "11-10-2026",
       "releaseTitle": "",
       "title": "Taco Tuesday Sneak Peek",
       "description": "A radio-style artist ad introducing the upcoming Friday release, its sound, and the story behind the song.",
       "youtubeId": "Xck7Ms9NB5E",
       "link": "#vault",
       "linkLabel": "Explore the Vault",
-      "active": false
+      "active": true
     }
   ]
 }
