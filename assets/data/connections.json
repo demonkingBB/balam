@@ -1,0 +1,10 @@
+{
+  "connections": [
+    {
+      "id": "phone-call-story",
+      "type": "story",
+      "name": "Phone Call Story",
+      "trackIds": ["ib_0015", "ib_0018"]
+    }
+  ]
+}

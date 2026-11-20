@@ -1151,6 +1151,23 @@ input:focus-visible {
   background: linear-gradient(180deg, rgba(17, 22, 27, 0.92), rgba(12, 16, 20, 0.98));
 }
 
+.vault-connection-focus {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid rgba(88, 153, 255, 0.42);
+  border-radius: 16px;
+  background: linear-gradient(110deg, rgba(38, 92, 167, 0.2), rgba(150, 42, 55, 0.16));
+}
+
+.vault-connection-focus[hidden] { display: none; }
+.connection-focus-copy h3 { margin: 0.1rem 0; color: var(--text-main); }
+.connection-focus-copy p:last-child { margin-bottom: 0; color: var(--text-muted); }
+.vault-connection-kicker { margin: 0; color: #9dc4ff; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+
 .vault-artist-context {
   display: flex;
   align-items: center;
@@ -1449,6 +1466,22 @@ input:focus-visible {
   background: rgba(212, 175, 55, 0.12);
   box-shadow: var(--shadow-gold);
   transform: translateY(-1px);
+}
+
+.card-connection-link { padding: 0; cursor: pointer; }
+.card-connection-link:hover, .card-connection-link:focus-visible {
+  border-color: #8fbaff;
+  background: linear-gradient(135deg, rgba(64, 132, 235, 0.24) 0 48%, rgba(203, 57, 69, 0.24) 52% 100%);
+  box-shadow: 0 0 12px rgba(79, 145, 255, 0.24);
+}
+.connection-mark { position: relative; display: inline-flex; width: 1.1rem; height: 1.1rem; align-items: center; justify-content: center; }
+.connection-mark span { position: relative; z-index: 2; font-size: 0.8rem; font-weight: 900; color: #f2f5fa; }
+.connection-mark i, .connection-mark b { position: absolute; top: 0.1rem; width: 0.42rem; height: 0.88rem; border-radius: 0.16rem; transform: skew(-18deg) rotate(24deg); }
+.connection-mark i { right: 0.03rem; background: #e4515d; }
+.connection-mark b { left: 0.03rem; background: #4e9aff; }
+
+@media (max-width: 560px) {
+  .vault-connection-focus { align-items: flex-start; flex-direction: column; }
 }
 
 .card-stream-link:focus-visible {

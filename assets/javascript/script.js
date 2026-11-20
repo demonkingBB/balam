@@ -1,6 +1,7 @@
 const TRACK_MANIFEST_PATH = 'assets/data/tracks.json';
 const ARTIST_MANIFEST_PATH = 'assets/data/artists.json';
 const SNEAK_PEEK_MANIFEST_PATH = 'assets/data/sneak-peeks.json';
+const CONNECTIONS_MANIFEST_PATH = 'assets/data/connections.json';
 const DEFAULT_ARTIST_ID = 'ivoleus-balam';
 const PRIMARY_CATEGORIES = [
   { id: 'urban', label: 'Urban' },
@@ -25,6 +26,8 @@ const DEFAULT_HERO_COVER = 'assets/images/logo.png';
 const DEFAULT_HERO_COVER_ALT = 'Ivoleus Balam logo';
 
 let vaultTracks = [];
+let vaultConnections = [];
+let activeVaultConnectionId = '';
 let vaultFilter = 'featured';
 let vaultSearchQuery = '';
 let vaultYearFilter = 'all';
@@ -61,10 +64,14 @@ async function loadTrackManifest() {
   if (!grid) return;
 
   try {
-    const [trackResponse, artistResponse] = await Promise.all([
+    const [trackResponse, artistResponse, connectionsResponse] = await Promise.all([
       fetch(TRACK_MANIFEST_PATH),
       fetch(ARTIST_MANIFEST_PATH).catch((error) => {
         console.warn('Artist manifest could not be requested:', error);
+        return null;
+      }),
+      fetch(CONNECTIONS_MANIFEST_PATH).catch((error) => {
+        console.warn('Connections manifest could not be requested:', error);
         return null;
       })
     ]);
@@ -95,6 +102,16 @@ async function loadTrackManifest() {
     }
 
     vaultTracks = tracks;
+    if (connectionsResponse?.ok) {
+      try {
+        const connectionData = await connectionsResponse.json();
+        const connections = Array.isArray(connectionData) ? connectionData : connectionData.connections;
+        vaultConnections = Array.isArray(connections) ? connections : [];
+      } catch (error) {
+        vaultConnections = [];
+        console.warn('Connections manifest could not be parsed:', error);
+      }
+    }
     normalizeVaultSelections();
     applyVaultUrlState();
     populateVaultFilterOptions();
@@ -291,6 +308,7 @@ function setupVaultControls() {
 
   if (searchInput) {
     searchInput.addEventListener('input', (event) => {
+      activeVaultConnectionId = '';
       vaultSearchQuery = String(event.target.value || '').trim().toLowerCase();
       updateVaultUrl();
       renderVaultGrid();
@@ -299,6 +317,7 @@ function setupVaultControls() {
 
   if (artistSelect) {
     artistSelect.addEventListener('change', (event) => {
+      activeVaultConnectionId = '';
       vaultArtistFilter = String(event.target.value || DEFAULT_ARTIST_ID);
       vaultCategoryFilter = 'all';
       vaultGenreFilter = 'all';
@@ -312,6 +331,7 @@ function setupVaultControls() {
 
   if (categorySelect) {
     categorySelect.addEventListener('change', (event) => {
+      activeVaultConnectionId = '';
       vaultCategoryFilter = String(event.target.value || 'all');
       vaultGenreFilter = 'all';
       populateVaultFilterOptions();
@@ -321,6 +341,7 @@ function setupVaultControls() {
 
   if (yearSelect) {
     yearSelect.addEventListener('change', (event) => {
+      activeVaultConnectionId = '';
       vaultYearFilter = String(event.target.value || 'all');
       renderVaultGrid();
     });
@@ -328,6 +349,7 @@ function setupVaultControls() {
 
   if (genreSelect) {
     genreSelect.addEventListener('change', (event) => {
+      activeVaultConnectionId = '';
       vaultGenreFilter = String(event.target.value || 'all');
       renderVaultGrid();
     });
@@ -335,6 +357,7 @@ function setupVaultControls() {
 
   if (resetButton) {
     resetButton.addEventListener('click', () => {
+      activeVaultConnectionId = '';
       vaultFilter = 'featured';
       vaultSearchQuery = '';
       vaultArtistFilter = getPrimaryArtist().id;
@@ -366,6 +389,7 @@ function setupVaultControls() {
 
   filterButtons.forEach((button) => {
     button.addEventListener('click', () => {
+      activeVaultConnectionId = '';
       vaultFilter = button.dataset.filter || 'all';
       filterButtons.forEach((otherButton) => {
         const isActive = otherButton === button;
@@ -556,12 +580,19 @@ function renderVaultGrid() {
 
   populateHeroTrack(heroTrack);
   renderSelectedArtist();
+  renderVaultConnectionFocus();
 
-  const visibleActiveTracks = activeTracks.filter((track) => matchesVaultFilters(track));
-  const visibleLockedTracks = lockedTracks.filter((track) => matchesVaultFilters(track));
-  let visibleTracks = [...visibleActiveTracks, ...visibleLockedTracks];
+  const focusedConnection = getActiveVaultConnection();
+  let visibleTracks = focusedConnection
+    ? sortTracksByReleaseDate(vaultTracks.filter((track) => (
+      Array.isArray(focusedConnection.trackIds) && focusedConnection.trackIds.includes(track.id)
+    )))
+    : [
+      ...activeTracks.filter((track) => matchesVaultFilters(track)),
+      ...lockedTracks.filter((track) => matchesVaultFilters(track))
+    ];
 
-  if (vaultFilter === 'featured') {
+  if (!focusedConnection && vaultFilter === 'featured') {
     visibleTracks = visibleTracks.slice(0, getFeaturedTrackLimit(grid));
   }
 
@@ -581,6 +612,38 @@ function renderVaultGrid() {
     const trackLabel = visibleTracks.length === 1 ? 'release' : 'releases';
     resultsCount.textContent = `${visibleTracks.length} ${trackLabel} shown`;
   }
+}
+
+function getTrackConnections(track) {
+  const trackId = String(track?.id || '');
+  return vaultConnections.filter((connection) => Array.isArray(connection.trackIds)
+    && connection.trackIds.includes(trackId));
+}
+
+function getActiveVaultConnection() {
+  return vaultConnections.find((connection) => connection.id === activeVaultConnectionId) || null;
+}
+
+function renderVaultConnectionFocus() {
+  const focus = document.getElementById('vault-connection-focus');
+  if (!focus) return;
+  const connection = getActiveVaultConnection();
+  if (!connection) {
+    focus.hidden = true;
+    focus.innerHTML = '';
+    return;
+  }
+
+  const typeLabel = connection.type === 'album' ? 'Album' : 'Connected Story';
+  focus.hidden = false;
+  focus.innerHTML = `
+    <div class="connection-focus-copy">
+      <p class="vault-connection-kicker">${escapeHtml(typeLabel)}</p>
+      <h3>${escapeHtml(connection.name || 'Connected releases')}</h3>
+      ${connection.description ? `<p>${escapeHtml(connection.description)}</p>` : ''}
+    </div>
+    <button class="vault-reset-btn" type="button" data-clear-connection>Back to vault</button>
+  `;
 }
 
 function getVaultColumnCount(grid) {
@@ -1137,6 +1200,7 @@ function renderProviderLink(provider) {
 }
 
 function renderTrackStreamingLinks(track) {
+  const connections = getTrackConnections(track);
   const providers = [
     { className: 'spotify', label: 'Spotify', href: track.spotifyUrl || '', icon: '♪' },
     { className: 'youtube', label: 'YouTube Music', href: track.youtubeMusicUrl || buildYoutubeMusicUrl(track.youtubeId), icon: '▶' },
@@ -1144,7 +1208,7 @@ function renderTrackStreamingLinks(track) {
     { className: 'hyperfollow', label: 'HyperFollow', href: track.hyperfollowUrl || '', icon: 'H' }
   ].filter((provider) => provider.href);
 
-  if (!providers.length) return '';
+  if (!providers.length && !connections.length) return '';
 
   return `
     <nav class="card-streaming-links" aria-label="${escapeAttribute(`${track.title || 'Track'} streaming links`)}">
@@ -1152,6 +1216,11 @@ function renderTrackStreamingLinks(track) {
         <a class="card-stream-link ${provider.className}" href="${escapeAttribute(provider.href)}" target="_blank" rel="noopener noreferrer" aria-label="Listen to ${escapeAttribute(track.title || 'track')} on ${provider.label}" title="${provider.label}">
           <span aria-hidden="true">${provider.icon}</span>
         </a>
+      `).join('')}
+      ${connections.map((connection) => `
+        <button class="card-stream-link card-connection-link" type="button" data-vault-connection="${escapeAttribute(connection.id)}" aria-label="Show connected releases: ${escapeAttribute(connection.name || connection.id)}" title="Show connected releases">
+          <span class="connection-mark" aria-hidden="true"><span>C</span><i></i><b></b></span>
+        </button>
       `).join('')}
     </nav>
   `;
@@ -1261,6 +1330,32 @@ function renderGatedTrackCard(track, index, notice) {
 }
 
 function handleVaultDocumentClick(event) {
+  const connectionButton = event.target.closest('[data-vault-connection]');
+  if (connectionButton) {
+    const connection = vaultConnections.find((item) => item.id === connectionButton.dataset.vaultConnection);
+    if (!connection) return;
+    activeVaultConnectionId = connection.id;
+    vaultSearchQuery = '';
+    const searchInput = document.getElementById('vault-search-input');
+    if (searchInput) searchInput.value = '';
+    vaultArtistFilter = vaultArtists.length > 1 ? 'all' : getPrimaryArtist().id;
+    vaultCategoryFilter = 'all';
+    vaultYearFilter = 'all';
+    vaultGenreFilter = 'all';
+    vaultFilter = 'all';
+    populateVaultFilterOptions();
+    updateVaultFilterButtons(vaultFilter);
+    renderVaultGrid();
+    document.getElementById('vault-connection-focus')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  if (event.target.closest('[data-clear-connection]')) {
+    activeVaultConnectionId = '';
+    renderVaultGrid();
+    return;
+  }
+
   const revealButton = event.target.closest('[data-reveal-track]');
   if (revealButton) {
     revealTrackContent(revealButton.dataset.revealTrack);
