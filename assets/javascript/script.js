@@ -1174,6 +1174,11 @@ function renderHeroStreamingLinks(track) {
       href: track.appleMusicUrl || ''
     },
     {
+      className: 'amazon',
+      label: 'Amazon Music',
+      href: track.amazonPurchaseUrl || ''
+    },
+    {
       className: 'hyperfollow',
       label: 'HyperFollow',
       href: track.hyperfollowUrl || ''
@@ -1205,6 +1210,7 @@ function renderTrackStreamingLinks(track) {
     { className: 'spotify', label: 'Spotify', href: track.spotifyUrl || '', icon: '♪' },
     { className: 'youtube', label: 'YouTube Music', href: track.youtubeMusicUrl || buildYoutubeMusicUrl(track.youtubeId), icon: '▶' },
     { className: 'apple', label: 'Apple Music', href: track.appleMusicUrl || '', icon: '♫' },
+    { className: 'amazon', label: 'Amazon Music', href: track.amazonPurchaseUrl || '', icon: 'a' },
     { className: 'hyperfollow', label: 'HyperFollow', href: track.hyperfollowUrl || '', icon: 'H' }
   ].filter((provider) => provider.href);
 
